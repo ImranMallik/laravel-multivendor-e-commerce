@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\Auth\LoginController;
 use App\Http\Controllers\Frontend\Auth\RegisterController;
 use App\Http\Controllers\Frontend\Auth\ResetPasswordController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,14 @@ use Illuminate\Support\Facades\Route;
 
 // Public
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Category browsing (placeholder pages; products come later). Inactive levels are a 404.
+Route::controller(ShopController::class)->group(function () {
+    Route::get('shop', 'index')->name('shop.index');
+    Route::get('category/{categorySlug}', 'category')->name('category.show');
+    Route::get('category/{categorySlug}/{subSlug}', 'subCategory')->name('category.sub.show');
+    Route::get('category/{categorySlug}/{subSlug}/{childSlug}', 'childCategory')->name('category.child.show');
+});
 
 // Guests only. The role of a new account is decided by which route is used here.
 Route::middleware('guest')->group(function () {

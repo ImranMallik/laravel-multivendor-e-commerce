@@ -1,0 +1,35 @@
+tv:
+  changes:
+    - '4.4'
+    - 5.0.0
+  label: Television
+  search:
+    terms:
+      - computer
+      - display
+      - monitor
+  styles:
+    - solid
+  unicode: f26c
+  voted: false
+star:
+  changes:
+    - 5.0.0
+  label: Star
+  search:
+    terms: []
+  styles:
+    - solid
+    - regular
+  unicode: f005
+  voted: false
+apple:
+  changes:
+    - 5.0.0
+  label: Apple
+  search:
+    terms: []
+  styles:
+    - brands
+  unicode: f179
+  voted: false

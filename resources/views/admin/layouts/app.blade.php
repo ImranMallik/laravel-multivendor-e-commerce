@@ -26,6 +26,9 @@
         </div>
     </div>
 
+    {{-- Modals pushed by components (e.g. the icon picker), kept outside any <form>. --}}
+    @stack('modals')
+
     @include('admin.layouts.partials.scripts')
     @include('admin.layouts.partials.alerts')
 </body>

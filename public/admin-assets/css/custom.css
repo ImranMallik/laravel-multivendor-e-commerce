@@ -12,4 +12,10 @@
   object-fit: cover;
 }
 
+/* Icon picker modal: Bootstrap 4.1 has no scrollable modal, so the body scrolls itself. */
+.icon-picker-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 /*# sourceMappingURL=custom.css.map */
