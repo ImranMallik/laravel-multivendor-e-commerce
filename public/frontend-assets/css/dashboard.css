@@ -1,0 +1,6 @@
+/* Small additions for the customer / vendor dashboard layout. */
+
+/* Avatars and shop logos: crop to fill instead of squashing the image. */
+.avatar-cover {
+  object-fit: cover;
+}

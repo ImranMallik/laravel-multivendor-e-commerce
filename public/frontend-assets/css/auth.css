@@ -1,0 +1,201 @@
+/*
+ * Auth pages (login, signup, forgot/reset password).
+ * Builds on the template's .wsus__login_* classes; only fixes alignment, spacing and states.
+ */
+
+/* One column width and card padding for every auth page. */
+#wsus__login_register {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+#wsus__login_register .wsus__login_reg_area {
+  width: 100%;
+  padding: 40px;
+}
+
+/* Icon circle + input share one height and a fixed gap. */
+#wsus__login_register .wsus__login_input {
+  position: relative;
+  align-items: flex-start;
+  margin-top: 25px;
+}
+
+#wsus__login_register .wsus__login_input i.auth-icon {
+  flex: 0 0 47px;
+  width: 47px;
+  height: 47px;
+  margin-right: 10px;
+  line-height: 47px;
+}
+
+#wsus__login_register .wsus__login_input input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 47px;
+  padding: 10px 20px;
+}
+
+#wsus__login_register .wsus__login_input input:disabled {
+  background: #f5f5f5;
+}
+
+/* Validation: red border + message under the input, aligned with the input (icon width + gap). */
+#wsus__login_register .wsus__login_input input.is-invalid {
+  border-color: #dc3545;
+}
+
+#wsus__login_register .auth-error {
+  margin: 6px 0 0 57px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #dc3545;
+}
+
+/* Show / hide password button sits inside the input's right edge. */
+#wsus__login_register .wsus__login_input.has-eye input {
+  padding-right: 48px;
+}
+
+#wsus__login_register .auth-eye {
+  position: absolute;
+  top: 0;
+  right: 6px;
+  width: 36px;
+  height: 47px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #6c757d;
+}
+
+/* The template styles every <i> inside .wsus__login_input as a blue circle; undo that for the eye. */
+#wsus__login_register .wsus__login_input .auth-eye i {
+  width: auto;
+  height: auto;
+  margin: 0;
+  line-height: 1;
+  color: inherit;
+  background: transparent;
+  border-radius: 0;
+}
+
+#wsus__login_register .auth-eye:hover,
+#wsus__login_register .auth-eye:focus-visible {
+  color: #08C;
+}
+
+/* Spacing before every submit button, matching the login form. */
+#wsus__login_register .wsus__login .common_btn {
+  margin-top: 25px;
+}
+
+#wsus__login_register .wsus__login .wsus__login_save + .common_btn {
+  margin-top: 0;
+}
+
+#wsus__login_register .wsus__login .common_btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Secondary "I want to shop / sell" switch: smaller and softer than the main tabs. */
+#wsus__login_register .auth-switch {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 0;
+}
+
+#wsus__login_register .auth-switch-label {
+  margin: 14px 0 0;
+  font-size: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+#wsus__login_register .auth-switch a {
+  flex: 1 1 0;
+  max-width: 180px;
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: capitalize;
+  color: #08C;
+  background: transparent;
+  border: 1px solid #b3dff5;
+  border-radius: 20px;
+}
+
+#wsus__login_register .auth-switch a.active {
+  color: #08C;
+  font-weight: 600;
+  background: #e6f4fb;
+  border-color: #08C;
+}
+
+/* Forgot / reset password headings inside the shared card. */
+#wsus__login_register .auth-heading {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+#wsus__login_register .auth-subtext {
+  margin: 0;
+  text-align: center;
+  color: #6c757d;
+}
+
+#wsus__login_register .auth-footer-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#wsus__login_register .wsus__login .forget_p {
+  color: #dc3545;
+}
+
+/* Small screens: tighter card, smaller icon, no horizontal overflow. */
+@media (max-width: 575.98px) {
+  #wsus__login_register {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  #wsus__login_register .wsus__login_reg_area {
+    padding: 24px 16px;
+  }
+
+  #wsus__login_register .wsus__login_reg_area .nav-item .nav-link {
+    font-size: 16px;
+  }
+
+  #wsus__login_register .wsus__login_input i.auth-icon {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    line-height: 40px;
+  }
+
+  #wsus__login_register .wsus__login_input input,
+  #wsus__login_register .auth-eye {
+    height: 40px;
+  }
+
+  #wsus__login_register .auth-error {
+    margin-left: 48px;
+  }
+
+  #wsus__login_register .wsus__login_save {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,15 @@
+/**
+ *
+ * You can write your CSS code here, DO NOT touch the default JavaScript file
+ * because it will make it harder for you to update.
+ *
+ */
+
+/* Project additions: keep this list short. Everything else must come from the template's classes. */
+
+/* Avatars and logos: crop to fill the circle instead of squashing the image. */
+.admin-img-cover {
+  object-fit: cover;
+}
+
+/*# sourceMappingURL=custom.css.map */
