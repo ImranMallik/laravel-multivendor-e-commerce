@@ -34,11 +34,23 @@
                 </ul>
             </li>
             {{-- Add Products, Attributes, ... as further <li> items and list their routes in routeIs(). --}}
-            <li class="dropdown {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->routeIs('admin.brands.*', 'admin.products.*', 'admin.attributes.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-box"></i> <span>Product</span></a>
                 <ul class="dropdown-menu">
                     <li class="{{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('admin.brands.index') }}">Brands</a>
+                    </li>
+                    <li class="{{ request()->routeIs('admin.attributes.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.attributes.index') }}">Attributes</a>
+                    </li>
+                    <li class="{{ request()->routeIs('admin.products.*') && ! request()->routeIs('admin.products.pending') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.products.index') }}">Products</a>
+                    </li>
+                    <li class="{{ request()->routeIs('admin.products.pending') ? 'active' : '' }}">
+                        {{-- $pendingProductsCount comes from AdminSidebarComposer. --}}
+                        <a class="nav-link" href="{{ route('admin.products.pending') }}">Pending Products
+                            @if ($pendingProductsCount)<span class="badge badge-warning ml-1" data-pending-products-count>{{ $pendingProductsCount }}</span>@endif
+                        </a>
                     </li>
                 </ul>
             </li>

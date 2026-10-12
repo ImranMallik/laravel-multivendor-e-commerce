@@ -22,7 +22,7 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        // Customers and vendors share this login; the role decides where they land.
+        // One login for everyone; an approved shop lands in the vendor panel, others in the account.
         return redirect()->intended($request->user()->homeRoute());
     }
 

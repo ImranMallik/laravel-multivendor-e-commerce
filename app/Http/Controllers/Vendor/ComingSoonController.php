@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
 /**
- * Placeholder for vendor sections that are not built yet (products, orders, earnings, withdrawals).
+ * Placeholder for vendor sections that are not built yet (orders, earnings, withdrawals).
  */
 class ComingSoonController extends Controller
 {

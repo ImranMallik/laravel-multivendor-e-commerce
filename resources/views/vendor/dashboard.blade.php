@@ -8,7 +8,7 @@
         {{-- TODO: replace the 0 placeholders with real counts once products, orders and earnings exist. --}}
         <div class="row">
             <div class="col-xl-3 col-6 col-md-4">
-                <a class="wsus__dashboard_item red" href="{{ route('vendor.products') }}">
+                <a class="wsus__dashboard_item red" href="{{ route('vendor.products.index') }}">
                     <i class="far fa-box"></i>
                     <p>products</p>
                     <h4>0</h4>

@@ -15,7 +15,7 @@ use App\Models\SubCategory;
 class CategoryBrowseService
 {
     /**
-     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>}
+     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>, filter: array<string, int>}
      */
     public function category(string $categorySlug): array
     {
@@ -27,11 +27,12 @@ class CategoryBrowseService
             'links' => $category->subCategories()->active()->ordered()->get(['id', 'category_id', 'name', 'slug'])
                 ->mapWithKeys(fn (SubCategory $sub) => [$sub->name => route('category.sub.show', [$category->slug, $sub->slug])])
                 ->all(),
+            'filter' => ['category_id' => $category->id],
         ];
     }
 
     /**
-     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>}
+     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>, filter: array<string, int>}
      */
     public function subCategory(string $categorySlug, string $subSlug): array
     {
@@ -47,11 +48,12 @@ class CategoryBrowseService
             'links' => $sub->childCategories()->active()->ordered()->get(['id', 'sub_category_id', 'name', 'slug'])
                 ->mapWithKeys(fn (ChildCategory $child) => [$child->name => route('category.child.show', [$category->slug, $sub->slug, $child->slug])])
                 ->all(),
+            'filter' => ['sub_category_id' => $sub->id],
         ];
     }
 
     /**
-     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>}
+     * @return array{title: string, trail: array<string, string|null>, links: array<string, string>, filter: array<string, int>}
      */
     public function childCategory(string $categorySlug, string $subSlug, string $childSlug): array
     {
@@ -67,6 +69,7 @@ class CategoryBrowseService
                 $child->name => null,
             ],
             'links' => [],
+            'filter' => ['child_category_id' => $child->id],
         ];
     }
 

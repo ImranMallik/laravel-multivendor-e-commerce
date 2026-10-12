@@ -22,7 +22,7 @@
         searchDelay: 400,
         pageLength: 10,
         lengthMenu: [10, 25, 50, 100],
-        order: [[6, 'desc']], // newest first
+        order: [[7, 'desc']], // newest first
         // No custom "processing" markup: the admin template already draws its own spinner on
         // .dataTables_processing, and adding another would show two.
         language: {
@@ -53,6 +53,7 @@
             {data: 'owner', name: 'owner'},
             {data: 'email', name: 'email'},
             {data: 'phone', name: 'phone'},
+            {data: 'source', name: 'source'},
             {data: 'status', name: 'status'},
             {data: 'created_at', name: 'created_at'},
             {data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'}

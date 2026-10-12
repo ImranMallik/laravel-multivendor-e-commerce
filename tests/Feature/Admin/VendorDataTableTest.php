@@ -36,7 +36,7 @@ class VendorDataTableTest extends TestCase
             'name' => $name,
             'searchable' => in_array($name, ['DT_RowIndex', 'action'], true) ? 'false' : 'true',
             'orderable' => in_array($name, ['DT_RowIndex', 'action'], true) ? 'false' : 'true',
-        ], ['DT_RowIndex', 'shop', 'owner', 'email', 'phone', 'status', 'created_at', 'action']);
+        ], ['DT_RowIndex', 'shop', 'owner', 'email', 'phone', 'source', 'status', 'created_at', 'action']);
 
         return array_merge([
             'draw' => 1,
@@ -44,7 +44,7 @@ class VendorDataTableTest extends TestCase
             'length' => 10,
             'search' => ['value' => ''],
             'columns' => $columns,
-            'order' => [['column' => 6, 'dir' => 'desc']],
+            'order' => [['column' => 7, 'dir' => 'desc']],
         ], $extra);
     }
 
@@ -95,6 +95,17 @@ class VendorDataTableTest extends TestCase
         $this->assertStringContainsString('badge-warning', $this->fetch()->json('data.0.status'));
     }
 
+    public function test_source_column_shows_the_badge_from_the_enum(): void
+    {
+        Vendor::factory()->createdByAdmin()->approved()->create(['shop_name' => 'Admin Made']);
+        Vendor::factory()->create(['shop_name' => 'Self Applied']);
+
+        $rows = collect($this->fetch()->json('data'))->mapWithKeys(fn (array $row) => [trim(strip_tags($row['shop'])) => trim(strip_tags($row['source']))]);
+
+        $this->assertSame('Admin', $rows['Admin Made']);
+        $this->assertSame('Applied', $rows['Self Applied']);
+    }
+
     public function test_row_actions_follow_the_vendor_status(): void
     {
         Vendor::factory()->create(['shop_name' => 'Pending One']);
@@ -112,8 +123,8 @@ class VendorDataTableTest extends TestCase
     {
         $expected = [
             'pending' => ['approve', 'reject'],
-            'approved' => ['reject', 'suspend'],
-            'rejected' => ['approve'],
+            'approved' => ['suspend'],
+            'rejected' => [],
             'suspended' => ['reactivate'],
         ];
 
@@ -155,7 +166,7 @@ class VendorDataTableTest extends TestCase
 
     public function test_searches_shop_owner_email_and_phone(): void
     {
-        $owner = User::factory()->create(['name' => 'Zelda Owner', 'email' => 'zelda@sample.test', 'role' => 'vendor']);
+        $owner = User::factory()->create(['name' => 'Zelda Owner', 'email' => 'zelda@sample.test']);
         Vendor::factory()->create(['user_id' => $owner->id, 'shop_name' => 'Hyrule Goods', 'phone' => '555-7777']);
         Vendor::factory()->create(['shop_name' => 'Other Store', 'phone' => '555-1111']);
 
@@ -188,8 +199,8 @@ class VendorDataTableTest extends TestCase
 
     public function test_sorting_by_owner_and_email_uses_the_related_user(): void
     {
-        $a = User::factory()->create(['name' => 'Aaron', 'email' => 'z@x.test', 'role' => 'vendor']);
-        $b = User::factory()->create(['name' => 'Zed', 'email' => 'a@x.test', 'role' => 'vendor']);
+        $a = User::factory()->create(['name' => 'Aaron', 'email' => 'z@x.test']);
+        $b = User::factory()->create(['name' => 'Zed', 'email' => 'a@x.test']);
         Vendor::factory()->create(['user_id' => $a->id, 'shop_name' => 'Owned By Aaron']);
         Vendor::factory()->create(['user_id' => $b->id, 'shop_name' => 'Owned By Zed']);
 
@@ -264,7 +275,7 @@ class VendorDataTableTest extends TestCase
     {
         $vendor = Vendor::factory()->approved()->create();
 
-        $this->admin()->postJson(route('admin.vendors.suspend', $vendor))->assertOk()->assertJson(['status' => 'suspended']);
+        $this->admin()->postJson(route('admin.vendors.suspend', $vendor), ['reason' => 'Policy breach.'])->assertOk()->assertJson(['status' => 'suspended']);
         $this->admin()->postJson(route('admin.vendors.reactivate', $vendor))->assertOk()->assertJson(['status' => 'approved']);
     }
 

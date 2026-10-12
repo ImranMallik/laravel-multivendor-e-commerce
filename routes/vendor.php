@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Catalog\ChildCategoryOptionsController;
+use App\Http\Controllers\Catalog\SubCategoryOptionsController;
 use App\Http\Controllers\Vendor\ComingSoonController;
 use App\Http\Controllers\Vendor\DashboardController;
+use App\Http\Controllers\Vendor\ProductController;
+use App\Http\Controllers\Vendor\ProductStateController;
 use App\Http\Controllers\Vendor\ProfileController;
 use App\Http\Controllers\Vendor\ShopSettingsController;
-use App\Http\Controllers\Vendor\StatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +16,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Loaded by RouteServiceProvider with the "vendor" prefix, "vendor." name prefix and
-| the web, auth:web, active and role:vendor middleware. Logout is the shared "logout" route.
+| the web, auth:web, active and vendor (user owns a shop) middleware. Logout is the shared "logout" route.
 |
 */
 
-// Reachable while pending, rejected or suspended.
-Route::get('status', [StatusController::class, 'show'])->name('status');
+// Shop status now lives on the account page (Become a Seller); old links keep working.
+Route::redirect('status', '/account/seller')->name('status');
 
 Route::middleware('vendor.approved')->group(function () {
     Route::redirect('/', '/vendor/dashboard');
@@ -34,8 +37,18 @@ Route::middleware('vendor.approved')->group(function () {
         Route::put('password', 'updatePassword')->name('password');
     });
 
-    // TODO: replace each placeholder with its real module (products, orders, earnings, withdrawals).
-    foreach (['products', 'orders', 'earnings', 'withdrawals'] as $section) {
+    // Products: only the signed-in seller's own (ProductPolicy on every action).
+    Route::get('products/data', [ProductController::class, 'data'])->name('products.data');
+    Route::patch('products/{product}/status', [ProductStateController::class, 'status'])->name('products.status');
+    Route::delete('products/{product}/images/{image}', [ProductStateController::class, 'destroyImage'])->scopeBindings()->name('products.images.destroy');
+    Route::resource('products', ProductController::class)->except('show');
+
+    // Dependent category dropdowns of the product form.
+    Route::get('categories/{category}/sub-categories', SubCategoryOptionsController::class)->name('categories.sub-categories');
+    Route::get('sub-categories/{subCategory}/child-categories', ChildCategoryOptionsController::class)->name('sub-categories.child-categories');
+
+    // TODO: replace each placeholder with its real module (orders, earnings, withdrawals).
+    foreach (['orders', 'earnings', 'withdrawals'] as $section) {
         Route::get($section, ComingSoonController::class)->defaults('section', $section)->name($section);
     }
 });

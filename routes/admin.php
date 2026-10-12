@@ -1,17 +1,23 @@
 <?php
 
+use App\Enums\ProductFlag;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\ResetPasswordController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CategorySubCategoryController;
 use App\Http\Controllers\Admin\ChildCategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductStateController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\VendorController;
+use App\Http\Controllers\Catalog\ChildCategoryOptionsController;
+use App\Http\Controllers\Catalog\SubCategoryOptionsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,9 +47,13 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 
+    Route::get('notifications/{notification}', NotificationController::class)->name('notifications.open');
+
     Route::controller(VendorController::class)->prefix('vendors')->name('vendors.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('data', 'data')->name('data');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
         Route::get('{vendor}', 'show')->name('show');
         Route::post('{vendor}/approve', 'approve')->name('approve');
         Route::post('{vendor}/reject', 'reject')->name('reject');
@@ -54,7 +64,7 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     // Catalogue structure: Category -> Sub Category -> Child Category.
     Route::get('categories/data', [CategoryController::class, 'data'])->name('categories.data');
     Route::patch('categories/{category}/status', [CategoryController::class, 'status'])->name('categories.status');
-    Route::get('categories/{category}/sub-categories', CategorySubCategoryController::class)->name('categories.sub-categories');
+    Route::get('categories/{category}/sub-categories', SubCategoryOptionsController::class)->name('categories.sub-categories');
     Route::resource('categories', CategoryController::class)->except('show');
 
     Route::get('sub-categories/data', [SubCategoryController::class, 'data'])->name('sub-categories.data');
@@ -70,6 +80,23 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     Route::patch('brands/{brand}/status', [BrandController::class, 'status'])->name('brands.status');
     Route::patch('brands/{brand}/featured', [BrandController::class, 'featured'])->name('brands.featured');
     Route::resource('brands', BrandController::class)->except('show');
+
+    Route::get('attributes/data', [AttributeController::class, 'data'])->name('attributes.data');
+    Route::patch('attributes/{attribute}/status', [AttributeController::class, 'status'])->name('attributes.status');
+    Route::resource('attributes', AttributeController::class)->except('show');
+
+    Route::get('sub-categories/{subCategory}/child-categories', ChildCategoryOptionsController::class)->name('sub-categories.child-categories');
+
+    Route::get('products/data', [ProductController::class, 'data'])->name('products.data');
+    Route::get('products/pending', [ProductController::class, 'pending'])->name('products.pending');
+    Route::controller(ProductStateController::class)->prefix('products/{product}')->name('products.')->group(function () {
+        Route::patch('status', 'status')->name('status');
+        Route::patch('flags/{flag}', 'flag')->whereIn('flag', ProductFlag::columns())->name('flag');
+        Route::post('approve', 'approve')->name('approve');
+        Route::post('reject', 'reject')->name('reject');
+        Route::delete('images/{image}', 'destroyImage')->scopeBindings()->name('images.destroy');
+    });
+    Route::resource('products', ProductController::class);
 
     // Website content: home banner sliders.
     Route::get('sliders/data', [SliderController::class, 'data'])->name('sliders.data');

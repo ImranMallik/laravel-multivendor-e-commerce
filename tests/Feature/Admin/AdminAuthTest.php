@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 class AdminAuthTest extends TestCase
@@ -114,17 +113,5 @@ class AdminAuthTest extends TestCase
 
         $this->get(route('account.dashboard'))
             ->assertRedirect(route('login'));
-    }
-
-    public function test_role_middleware_allows_only_matching_role(): void
-    {
-        Route::middleware(['web', 'auth', 'role:vendor'])
-            ->get('/_vendor-test', fn () => 'ok');
-
-        $this->actingAs(User::factory()->create(['role' => UserRole::Customer]))
-            ->get('/_vendor-test')->assertForbidden();
-
-        $this->actingAs(User::factory()->create(['role' => UserRole::Vendor]))
-            ->get('/_vendor-test')->assertOk();
     }
 }

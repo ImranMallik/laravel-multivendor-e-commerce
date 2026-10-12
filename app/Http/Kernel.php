@@ -4,7 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\EnsureUserHasRole;
+use App\Http\Middleware\EnsureUserHasShop;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\EnsureVendorIsApproved;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -84,7 +84,7 @@ class Kernel extends HttpKernel
         'auth.session' => AuthenticateSession::class,
         'cache.headers' => SetCacheHeaders::class,
         'can' => Authorize::class,
-        'role' => EnsureUserHasRole::class,
+        'vendor' => EnsureUserHasShop::class,
         'active' => EnsureUserIsActive::class,
         'vendor.approved' => EnsureVendorIsApproved::class,
         'guest' => RedirectIfAuthenticated::class,

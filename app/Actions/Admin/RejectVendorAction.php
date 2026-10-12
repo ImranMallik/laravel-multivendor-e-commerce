@@ -2,23 +2,16 @@
 
 namespace App\Actions\Admin;
 
-use App\Enums\VendorStatus;
-use App\Events\VendorRejected;
+use App\Models\Admin;
 use App\Models\Vendor;
+use App\Services\VendorStatusService;
 
 class RejectVendorAction
 {
-    public function execute(Vendor $vendor, string $reason): Vendor
+    public function __construct(private readonly VendorStatusService $status) {}
+
+    public function execute(Vendor $vendor, string $reason, ?Admin $admin = null): Vendor
     {
-        VendorStatusTransition::assert($vendor, VendorStatus::Rejected);
-
-        $vendor->status = VendorStatus::Rejected;
-        $vendor->rejection_reason = $reason;
-        $vendor->approved_at = null;
-        $vendor->save();
-
-        event(new VendorRejected($vendor));
-
-        return $vendor;
+        return $this->status->reject($vendor, $reason, $admin);
     }
 }

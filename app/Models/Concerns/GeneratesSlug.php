@@ -2,10 +2,11 @@
 
 namespace App\Models\Concerns;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 /**
- * Keeps `slug` in step with `name`, unique inside the model's scope.
+ * Keeps `slug` in step with `name`, unique inside the model's scope (soft deleted rows count when the model has them).
  *
  * The slug is generated on create and regenerated when the name (or the parent that defines the
  * scope) changes. Soft-deleted rows are included in the uniqueness check because the database
@@ -48,7 +49,10 @@ trait GeneratesSlug
     {
         $scope = $this->slugScope();
 
-        return static::withTrashed()
+        // Models without soft deletes (attributes) have no trashed rows to include.
+        $query = in_array(SoftDeletes::class, class_uses_recursive(static::class), true) ? static::withTrashed() : static::query();
+
+        return $query
             ->where('slug', $slug)
             ->when($scope, fn ($query) => $query->where($scope[0], $scope[1]))
             ->when($this->exists, fn ($query) => $query->whereKeyNot($this->getKey()))

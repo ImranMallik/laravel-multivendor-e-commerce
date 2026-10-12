@@ -216,7 +216,7 @@ class AvatarTest extends TestCase
         $this->assertStringContainsString('dashboard_user.jpg', $user->avatar_url);
     }
 
-    public function test_guests_and_other_roles_cannot_use_the_endpoints(): void
+    public function test_guests_cannot_use_the_endpoints_and_the_vendor_panel_needs_a_shop(): void
     {
         $vendor = Vendor::factory()->approved()->create();
         $customer = User::factory()->create();
@@ -224,7 +224,9 @@ class AvatarTest extends TestCase
         $this->put(route('account.profile.update'), [])->assertRedirect(route('login'));
         $this->delete(route('vendor.profile.avatar.destroy'))->assertRedirect(route('login'));
 
-        $this->actingAs($customer, 'web')->delete(route('vendor.profile.avatar.destroy'))->assertForbidden();
-        $this->actingAs($vendor->user, 'web')->delete(route('account.profile.avatar.destroy'))->assertForbidden();
+        // A customer without a shop is sent to the Become a Seller page instead of the vendor panel.
+        $this->actingAs($customer, 'web')->delete(route('vendor.profile.avatar.destroy'))->assertRedirect(route('account.seller.show'));
+        // A seller keeps their customer account (one login, the shop is an extra layer).
+        $this->actingAs($vendor->user, 'web')->delete(route('account.profile.avatar.destroy'))->assertRedirect();
     }
 }

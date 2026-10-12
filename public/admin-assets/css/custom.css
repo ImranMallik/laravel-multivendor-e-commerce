@@ -25,3 +25,8 @@
 }
 
 /*# sourceMappingURL=custom.css.map */
+
+/* Product gallery thumbnails (new-image previews). */
+.product-gallery-thumb {
+  object-fit: cover;
+}

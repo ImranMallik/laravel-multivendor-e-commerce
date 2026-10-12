@@ -15,10 +15,15 @@ class DeleteBrandAction
      */
     public function execute(Brand $brand): void
     {
-        // TODO: enable once products exist (products.brand_id) and Brand::products() is added.
-        // if ($brand->products()->exists()) {
-        //     throw new DomainException('This brand still has products. Remove or move them first.');
-        // }
+        $products = $brand->products()->count();
+
+        if ($products > 0) {
+            throw new DomainException(sprintf(
+                'This brand still has %d %s. Remove or move them first.',
+                $products,
+                $products === 1 ? 'product' : 'products',
+            ));
+        }
 
         $brand->delete();
     }

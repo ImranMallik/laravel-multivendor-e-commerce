@@ -25,6 +25,7 @@ class VendorDataTable
             ->addColumn('owner', fn (Vendor $vendor) => $vendor->user->name)
             ->addColumn('email', fn (Vendor $vendor) => $vendor->user->email)
             ->editColumn('phone', fn (Vendor $vendor) => $vendor->phone ?: ($vendor->user->phone ?: '—'))
+            ->editColumn('source', fn (Vendor $vendor) => Blade::render('<x-admin.badge :status="$status" />', ['status' => $vendor->source]))
             ->editColumn('status', fn (Vendor $vendor) => Blade::render('<x-admin.badge :status="$status" />', ['status' => $vendor->status]))
             ->editColumn('created_at', fn (Vendor $vendor) => $vendor->created_at->format('d M Y'))
             ->addColumn('action', fn (Vendor $vendor) => view('admin.vendors.partials.actions', ['vendor' => $vendor])->render())
@@ -37,9 +38,10 @@ class VendorDataTable
                 User::select('email')->whereColumn('users.id', 'vendors.user_id'), $dir
             ))
             ->orderColumn('phone', 'vendors.phone $1')
+            ->orderColumn('source', 'vendors.source $1')
             // A filter callback replaces yajra's automatic per-column search (the default flag).
             ->filter(fn ($query) => $query->search($request->input('search.value')))
-            ->rawColumns(['shop', 'status', 'action'])
+            ->rawColumns(['shop', 'source', 'status', 'action'])
             ->with('counts', Vendor::statusCounts())
             ->toJson();
     }

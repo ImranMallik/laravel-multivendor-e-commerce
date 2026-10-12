@@ -316,7 +316,8 @@ $(function () {
     d.setDate(d.getDate() + 90);
 
     // default example
-    simplyCountdown('.simply-countdown-one', {
+    // Elements with data-countdown-end count down to a real offer (product-countdown.js).
+    simplyCountdown('.simply-countdown-one:not([data-countdown-end])', {
         year: d.getFullYear(),
         month: d.getMonth() + 1,
         day: d.getDate(),

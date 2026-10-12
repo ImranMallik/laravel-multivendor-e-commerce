@@ -19,6 +19,30 @@ enum VendorAction: string
         return ucfirst($this->value);
     }
 
+    /**
+     * The only status this action can be taken from.
+     */
+    public function fromStatus(): VendorStatus
+    {
+        return match ($this) {
+            self::Approve, self::Reject => VendorStatus::Pending,
+            self::Suspend => VendorStatus::Approved,
+            self::Reactivate => VendorStatus::Suspended,
+        };
+    }
+
+    /**
+     * The status this action moves a vendor to.
+     */
+    public function targetStatus(): VendorStatus
+    {
+        return match ($this) {
+            self::Approve, self::Reactivate => VendorStatus::Approved,
+            self::Reject => VendorStatus::Rejected,
+            self::Suspend => VendorStatus::Suspended,
+        };
+    }
+
     public function icon(): string
     {
         return match ($this) {
@@ -57,12 +81,12 @@ enum VendorAction: string
 
     public function requiresReason(): bool
     {
-        return $this === self::Reject;
+        return $this === self::Reject || $this === self::Suspend;
     }
 
     public function confirmIcon(): string
     {
-        return $this->requiresReason() || $this === self::Suspend ? 'warning' : 'question';
+        return $this->requiresReason() ? 'warning' : 'question';
     }
 
     public function confirmTitle(): string
@@ -80,7 +104,7 @@ enum VendorAction: string
         return match ($this) {
             self::Approve => 'The vendor can use the vendor panel and is notified by email.',
             self::Reject => 'The reason is emailed to the vendor and shown on their status page.',
-            self::Suspend => 'The vendor loses access to the vendor panel until reactivated.',
+            self::Suspend => 'The vendor loses access to the vendor panel until reactivated. The reason is emailed to the vendor.',
             self::Reactivate => 'The vendor gets access to the vendor panel again.',
         };
     }

@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\VendorSource;
 use App\Enums\VendorStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -16,8 +18,8 @@ class Vendor extends Model
     use HasFactory;
 
     /**
-     * Status, rejection_reason and approved_at are changed only by the vendor Actions,
-     * so they are intentionally not mass assignable.
+     * Status, source, rejection_reason and the review/approval columns are written only by
+     * VendorStatusService, so they are intentionally not mass assignable.
      *
      * @var array<int, string>
      */
@@ -31,7 +33,10 @@ class Vendor extends Model
 
     protected $casts = [
         'status' => VendorStatus::class,
+        'source' => VendorSource::class,
         'approved_at' => 'datetime',
+        'applied_at' => 'datetime',
+        'reviewed_at' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -59,6 +64,46 @@ class Vendor extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'created_by');
+    }
+
+    public function reviewedBy(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class, 'reviewed_by');
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function statusLogs(): HasMany
+    {
+        return $this->hasMany(VendorStatusLog::class)->latest('id');
+    }
+
+    /**
+     * Why the shop is suspended: the reason of the latest log entry that suspended it.
+     */
+    public function suspensionReason(): ?string
+    {
+        return $this->statusLogs()->where('to_status', VendorStatus::Suspended->value)->value('reason');
+    }
+
+    /**
+     * The reason behind a Rejected or Suspended status, for the vendor's status page.
+     */
+    public function statusReason(): ?string
+    {
+        return match ($this->status) {
+            VendorStatus::Rejected => $this->rejection_reason,
+            VendorStatus::Suspended => $this->suspensionReason(),
+            default => null,
+        };
     }
 
     public function isApproved(): bool

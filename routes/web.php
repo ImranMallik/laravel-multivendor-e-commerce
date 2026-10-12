@@ -3,12 +3,16 @@
 use App\Http\Controllers\Frontend\Account\DashboardController;
 use App\Http\Controllers\Frontend\Account\PlaceholderController;
 use App\Http\Controllers\Frontend\Account\ProfileController;
+use App\Http\Controllers\Frontend\Account\SellerController;
 use App\Http\Controllers\Frontend\Auth\ForgotPasswordController;
 use App\Http\Controllers\Frontend\Auth\LoginController;
 use App\Http\Controllers\Frontend\Auth\RegisterController;
 use App\Http\Controllers\Frontend\Auth\ResetPasswordController;
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\ShopController;
+use App\Http\Controllers\Frontend\StoreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Category browsing (placeholder pages; products come later). Inactive levels are a 404.
+// Product listings (all, or by category level). Inactive levels are a 404.
 Route::controller(ShopController::class)->group(function () {
     Route::get('shop', 'index')->name('shop.index');
     Route::get('category/{categorySlug}', 'category')->name('category.show');
@@ -32,7 +36,14 @@ Route::controller(ShopController::class)->group(function () {
     Route::get('category/{categorySlug}/{subSlug}/{childSlug}', 'childCategory')->name('category.child.show');
 });
 
-// Guests only. The role of a new account is decided by which route is used here.
+// Product page and public vendor shop pages (404 unless visible / approved).
+Route::get('product/{slug}', [ProductController::class, 'show'])->name('product.show');
+Route::get('store/{slug}', [StoreController::class, 'show'])->name('store.show');
+
+// Add to cart (validates the product and its variant; the cart itself comes later).
+Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
+
+// Guests only. "I want to sell" creates a customer account plus a pending shop application.
 Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->name('login');
     Route::post('login', [LoginController::class, 'store'])->name('login.store');
@@ -49,11 +60,11 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [ResetPasswordController::class, 'store'])->name('password.store');
 });
 
-// Any signed-in web user (customer or vendor) can log out.
+// Any signed-in web user can log out.
 Route::post('logout', [LoginController::class, 'destroy'])->middleware('auth:web')->name('logout');
 
-// Customer account area
-Route::middleware(['auth:web', 'active', 'role:customer'])->prefix('account')->name('account.')->group(function () {
+// Account area: every signed-in user, sellers included (one account, the shop is an extra layer).
+Route::middleware(['auth:web', 'active'])->prefix('account')->name('account.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
@@ -61,6 +72,13 @@ Route::middleware(['auth:web', 'active', 'role:customer'])->prefix('account')->n
         Route::put('/', 'update')->name('update');
         Route::delete('avatar', 'destroyAvatar')->name('avatar.destroy');
         Route::put('password', 'updatePassword')->name('password');
+    });
+
+    // Become a Seller: application form, review status and re-application.
+    Route::controller(SellerController::class)->prefix('seller')->name('seller.')->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::post('/', 'apply')->name('apply');
+        Route::put('/', 'reapply')->name('reapply');
     });
 
     // TODO: replace with real controllers once orders and wishlists exist.

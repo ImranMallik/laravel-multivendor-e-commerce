@@ -1,39 +1,42 @@
-@props(['product'])
+{{--
+    Storefront product card (template "wsus__product_item"), used on the home page, shop, category,
+    vendor shop and related products.
+    <x-frontend.product-card :product="$product" />  (load with Product::forCards() to avoid extra queries)
+    Ratings, wishlist and quick view arrive with their modules; until then the eye opens the product page.
+--}}
+@props(['product', 'listView' => false])
 
-<div class="wsus__product_item">
-    @if ($product['badge'])
-        <span class="wsus__new">{{ $product['badge'] }}</span>
+<div {{ $attributes->class(['wsus__product_item', 'wsus__list_view' => $listView]) }}>
+    @if ($product->is_new)
+        <span class="wsus__new">New</span>
     @endif
-    @if ($product['discount'])
-        <span class="wsus__minus">{{ $product['discount'] }}</span>
+    @if ($product->discount_percent > 0)
+        <span class="wsus__minus">-{{ $product->discount_percent }}%</span>
     @endif
-    <a class="wsus__pro_link" href="{{ route('product.show', $product['slug']) }}">
-        <img src="{{ asset('frontend-assets/images/'.$product['image']) }}" alt="{{ $product['name'] }}" class="img-fluid w-100 img_1">
-        <img src="{{ asset('frontend-assets/images/'.$product['image_hover']) }}" alt="{{ $product['name'] }}" class="img-fluid w-100 img_2">
+    <a class="wsus__pro_link" href="{{ route('product.show', $product->slug) }}">
+        <img src="{{ $product->thumbnail_url }}" alt="{{ $product->name }}" class="img-fluid w-100 img_1" width="400" height="400" loading="lazy">
+        <img src="{{ $product->hover_image_url }}" alt="{{ $product->name }}" class="img-fluid w-100 img_2" width="400" height="400" loading="lazy">
     </a>
     <ul class="wsus__single_pro_icon">
-        <li><a href="{{ route('account.wishlist') }}"><i class="far fa-heart"></i></a></li>
+        <li><a href="{{ route('product.show', $product->slug) }}" aria-label="View {{ $product->name }}"><i class="far fa-eye"></i></a></li>
     </ul>
     <div class="wsus__product_details">
-        <a class="wsus__category" href="{{ route('category.show', $product['category']) }}">{{ $product['category'] }}</a>
-        <p class="wsus__pro_rating">
-            @for ($i = 1; $i <= 5; $i++)
-                @if ($product['rating'] >= $i)
-                    <i class="fas fa-star"></i>
-                @elseif ($product['rating'] >= $i - 0.5)
-                    <i class="fas fa-star-half-alt"></i>
-                @else
-                    <i class="far fa-star"></i>
-                @endif
-            @endfor
-            <span>({{ $product['reviews'] }} review)</span>
-        </p>
-        <a class="wsus__pro_name" href="{{ route('product.show', $product['slug']) }}">{{ $product['name'] }}</a>
-        <p class="wsus__price">${{ number_format($product['price'], 2) }}
-            @if ($product['old_price'])
-                <del>${{ number_format($product['old_price'], 2) }}</del>
+        @if ($product->category)
+            <a class="wsus__category" href="{{ route('category.show', $product->category->slug) }}">{{ $product->category->name }}</a>
+        @endif
+        <a class="wsus__pro_name" href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+        <p class="wsus__price">{{ $product->current_price_label }}
+            @if ($product->discount_percent > 0)
+                <del>{{ $product->price_label }}</del>
             @endif
         </p>
-        <a class="add_cart" href="{{ route('product.show', $product['slug']) }}">view product</a>
+        @if ($listView && $product->short_description)
+            <p class="list_description">{{ $product->short_description }}</p>
+        @endif
+        @if ($product->in_stock)
+            <a class="add_cart" href="{{ route('product.show', $product->slug) }}">view product</a>
+        @else
+            <span class="add_cart">out of stock</span>
+        @endif
     </div>
 </div>

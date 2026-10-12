@@ -2,22 +2,16 @@
 
 namespace App\Actions\Admin;
 
-use App\Enums\VendorStatus;
+use App\Models\Admin;
 use App\Models\Vendor;
+use App\Services\VendorStatusService;
 
 class ReactivateVendorAction
 {
-    public function execute(Vendor $vendor): Vendor
+    public function __construct(private readonly VendorStatusService $status) {}
+
+    public function execute(Vendor $vendor, ?Admin $admin = null): Vendor
     {
-        VendorStatusTransition::assert($vendor, VendorStatus::Approved);
-
-        if ($vendor->status !== VendorStatus::Suspended) {
-            throw new \DomainException('Only suspended vendors can be reactivated.');
-        }
-
-        $vendor->status = VendorStatus::Approved;
-        $vendor->save();
-
-        return $vendor;
+        return $this->status->reactivate($vendor, $admin);
     }
 }

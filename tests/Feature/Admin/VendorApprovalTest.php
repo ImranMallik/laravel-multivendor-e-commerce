@@ -128,10 +128,11 @@ class VendorApprovalTest extends TestCase
     {
         $vendor = Vendor::factory()->approved()->create();
 
-        $this->admin()->post(route('admin.vendors.suspend', $vendor));
+        $this->admin()->post(route('admin.vendors.suspend', $vendor), ['reason' => 'Counterfeit goods.']);
         $this->assertSame(VendorStatus::Suspended, $vendor->fresh()->status);
+        $this->assertSame('Counterfeit goods.', $vendor->fresh()->suspensionReason());
 
-        $this->actingAs($vendor->user, 'web')->get(route('vendor.dashboard'))->assertRedirect(route('vendor.status'));
+        $this->actingAs($vendor->user, 'web')->get(route('vendor.dashboard'))->assertRedirect(route('account.seller.show'));
 
         $this->admin()->post(route('admin.vendors.reactivate', $vendor));
         $this->assertSame(VendorStatus::Approved, $vendor->fresh()->status);
@@ -145,21 +146,25 @@ class VendorApprovalTest extends TestCase
         $pending = Vendor::factory()->create();
         $approved = Vendor::factory()->approved()->create();
 
-        $this->admin()->post(route('admin.vendors.suspend', $pending))->assertSessionHas('error');
+        $rejected = Vendor::factory()->rejected()->create();
+
+        $this->admin()->post(route('admin.vendors.suspend', $pending), ['reason' => 'Not allowed.'])->assertSessionHas('error');
         $this->admin()->post(route('admin.vendors.reactivate', $approved))->assertSessionHas('error');
+        $this->admin()->post(route('admin.vendors.reject', $approved), ['reason' => 'Not allowed.'])->assertSessionHas('error');
+        // A rejected vendor has to re-apply; an admin cannot approve it directly.
+        $this->admin()->post(route('admin.vendors.approve', $rejected))->assertSessionHas('error');
 
         $this->assertSame(VendorStatus::Pending, $pending->fresh()->status);
         $this->assertSame(VendorStatus::Approved, $approved->fresh()->status);
+        $this->assertSame(VendorStatus::Rejected, $rejected->fresh()->status);
     }
 
-    public function test_rejected_vendor_can_be_approved_later_and_reason_is_cleared(): void
+    public function test_suspension_requires_a_reason(): void
     {
-        $vendor = Vendor::factory()->rejected()->create();
+        $vendor = Vendor::factory()->approved()->create();
 
-        $this->admin()->post(route('admin.vendors.approve', $vendor));
+        $this->admin()->post(route('admin.vendors.suspend', $vendor), ['reason' => ''])->assertSessionHasErrors('reason');
 
-        $vendor->refresh();
-        $this->assertSame(VendorStatus::Approved, $vendor->status);
-        $this->assertNull($vendor->rejection_reason);
+        $this->assertSame(VendorStatus::Approved, $vendor->fresh()->status);
     }
 }

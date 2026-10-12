@@ -47,6 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        // Deprecated: kept in the table, but vendor access is decided by the vendors record.
         'role' => UserRole::class,
         'status' => UserStatus::class,
     ];
@@ -72,24 +73,22 @@ class User extends Authenticatable
         return $this->hasOne(Vendor::class);
     }
 
-    public function hasRole(UserRole $role): bool
+    /**
+     * Being a seller means owning a vendors record. users.role is no longer read for access.
+     */
+    public function hasShop(): bool
     {
-        return $this->role === $role;
-    }
-
-    public function isCustomer(): bool
-    {
-        return $this->hasRole(UserRole::Customer);
-    }
-
-    public function isVendor(): bool
-    {
-        return $this->hasRole(UserRole::Vendor);
+        return $this->vendor !== null;
     }
 
     public function isApprovedVendor(): bool
     {
-        return $this->isVendor() && $this->vendor?->isApproved() === true;
+        return $this->vendor?->isApproved() === true;
+    }
+
+    public function canApplyForVendor(): bool
+    {
+        return ! $this->hasShop();
     }
 
     public function isBlocked(): bool
@@ -98,10 +97,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Where this user lands after login: customers and vendors have separate areas.
+     * Where this user lands after login: sellers with an approved shop go to the vendor panel, everyone else to the account.
      */
     public function homeRoute(): string
     {
-        return $this->isVendor() ? route('vendor.dashboard') : route('account.dashboard');
+        return $this->isApprovedVendor() ? route('vendor.dashboard') : route('account.dashboard');
     }
 }

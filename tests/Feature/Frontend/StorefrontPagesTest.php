@@ -60,7 +60,7 @@ class StorefrontPagesTest extends TestCase
 
         $pages = [
             [$customer, ['account.dashboard', 'account.orders', 'account.wishlist', 'account.profile.edit']],
-            [$vendor->user, ['vendor.dashboard', 'vendor.shop.edit', 'vendor.profile.edit', 'vendor.products', 'vendor.orders', 'vendor.earnings', 'vendor.withdrawals']],
+            [$vendor->user, ['vendor.dashboard', 'vendor.shop.edit', 'vendor.profile.edit', 'vendor.products.index', 'vendor.products.create', 'vendor.orders', 'vendor.earnings', 'vendor.withdrawals']],
         ];
 
         foreach ($pages as [$user, $routes]) {
@@ -75,11 +75,11 @@ class StorefrontPagesTest extends TestCase
         }
     }
 
-    public function test_pending_vendor_status_page_loads_assets(): void
+    public function test_become_a_seller_page_loads_assets(): void
     {
         $vendor = Vendor::factory()->create();
 
-        $html = $this->actingAs($vendor->user)->get(route('vendor.status'))->assertOk()->getContent();
+        $html = $this->actingAs($vendor->user)->get(route('account.seller.show'))->assertOk()->getContent();
 
         $this->assertAssetsExist($html, 'frontend-assets');
     }

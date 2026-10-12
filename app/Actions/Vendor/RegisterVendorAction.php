@@ -2,48 +2,39 @@
 
 namespace App\Actions\Vendor;
 
-use App\Enums\UserRole;
-use App\Enums\VendorStatus;
-use App\Events\VendorRegistered;
+use App\Enums\VendorSource;
+use App\Events\VendorApplicationSubmitted;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Services\VendorStatusService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
 
 class RegisterVendorAction
 {
+    public function __construct(private readonly VendorStatusService $status) {}
+
     /**
-     * Create the user (role Vendor) and the pending vendor profile atomically.
+     * Signup with "I want to sell": a normal customer account plus a pending shop application, atomically.
      *
      * @param  array{name: string, email: string, phone?: string|null, password: string, shop_name: string, shop_phone?: string|null, address: string}  $data
      */
     public function execute(array $data): Vendor
     {
         $vendor = DB::transaction(function () use ($data) {
-            $user = new User([
+            $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? null,
                 'password' => $data['password'],
             ]);
-            $user->role = UserRole::Vendor;
-            $user->save();
 
-            $vendor = new Vendor([
-                'shop_name' => $data['shop_name'],
-                'phone' => $data['shop_phone'] ?? null,
-                'address' => $data['address'],
-            ]);
-            $vendor->user()->associate($user);
-            $vendor->status = VendorStatus::Pending;
-            $vendor->save();
-
-            return $vendor;
+            return $this->status->open($user, $data, VendorSource::Application);
         });
 
         // Dispatched only after the transaction has committed.
         event(new Registered($vendor->user));
-        event(new VendorRegistered($vendor));
+        event(new VendorApplicationSubmitted($vendor));
 
         return $vendor;
     }

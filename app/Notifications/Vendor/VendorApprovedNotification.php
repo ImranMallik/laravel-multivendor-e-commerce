@@ -26,7 +26,7 @@ class VendorApprovedNotification extends Notification
         return (new MailMessage)
             ->subject('Your shop has been approved')
             ->greeting("Hello {$notifiable->name},")
-            ->line("{$this->vendor->shop_name} has been approved. You can now use your vendor panel.")
-            ->action('Open vendor panel', route('vendor.dashboard'));
+            ->line("**{$this->vendor->shop_name}** has been approved. You can now use your seller dashboard.")
+            ->action('Open seller dashboard', route('vendor.dashboard'));
     }
 }

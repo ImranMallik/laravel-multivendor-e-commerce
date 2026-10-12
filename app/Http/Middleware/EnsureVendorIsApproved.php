@@ -9,18 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureVendorIsApproved
 {
     /**
-     * Vendors that are pending, rejected or suspended may only see the status page.
+     * Pending, rejected and suspended shops are sent to their status on the "Become a Seller" page.
      *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $vendor = $request->user()?->vendor;
-
-        abort_unless($vendor, 403);
-
-        if (! $vendor->isApproved()) {
-            return redirect()->route('vendor.status');
+        if ($request->user()?->vendor?->isApproved() !== true) {
+            return redirect()->route('account.seller.show');
         }
 
         return $next($request);

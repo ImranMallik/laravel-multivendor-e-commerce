@@ -107,9 +107,12 @@
                        <ul class="wsus__menu_item wsus__menu_item_right">
                            <li><a href="contact.html">contact</a></li>
                            @auth('web')
-                               <li><a
-                                       href="{{ auth('web')->user()->homeRoute() }}">{{ auth('web')->user()->isVendor() ? 'my shop' : 'my account' }}</a>
-                               </li>
+                               <li><a href="{{ route('account.dashboard') }}">my account</a></li>
+                               @if (auth('web')->user()->isApprovedVendor())
+                                   <li><a href="{{ route('vendor.dashboard') }}">seller dashboard</a></li>
+                               @else
+                                   <li><a href="{{ route('account.seller.show') }}">become a seller</a></li>
+                               @endif
                                <li>
                                    <a href="#" data-confirm="You will need to sign in again to access your account."
                                        data-confirm-title="Log out?" data-confirm-button="Yes, log out"

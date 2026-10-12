@@ -26,7 +26,9 @@ class VendorRejectedNotification extends Notification
         return (new MailMessage)
             ->subject('Your shop application was not approved')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Unfortunately {$this->vendor->shop_name} was not approved.")
-            ->line("Reason: {$this->vendor->rejection_reason}");
+            ->line("Unfortunately **{$this->vendor->shop_name}** was not approved.")
+            ->line("Reason: {$this->vendor->rejection_reason}")
+            ->line('You can correct your details and apply again.')
+            ->action('Update and re-apply', route('account.seller.show'));
     }
 }

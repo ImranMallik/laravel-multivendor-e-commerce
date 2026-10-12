@@ -85,17 +85,22 @@
                 return;
             }
 
-            refresh();
-
-            Swal.fire({
+            var done = Swal.fire({
                 position: 'center',
                 icon: 'success',
                 title: 'Done',
                 text: result.value.message,
-                timer: 2000,
+                timer: 1500,
                 timerProgressBar: true,
                 showConfirmButton: false
             });
+
+            if (window.vendorTable) {
+                refresh();
+            } else {
+                // A page reload would remove the message, so reload once it has been shown.
+                done.then(refresh);
+            }
         });
     });
 })(jQuery);

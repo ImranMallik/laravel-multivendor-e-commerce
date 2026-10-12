@@ -4,3 +4,8 @@
 .avatar-cover {
   object-fit: cover;
 }
+
+/* Product gallery thumbnails in the vendor product form. */
+.product-gallery-thumb {
+  object-fit: cover;
+}

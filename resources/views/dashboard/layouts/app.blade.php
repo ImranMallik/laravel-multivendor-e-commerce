@@ -7,8 +7,8 @@
 <body>
     <section id="wsus__dashboard">
         <div class="container-fluid">
-            {{-- One sidebar partial per role: dashboard/sidebars/customer.blade.php or vendor.blade.php --}}
-            @include('dashboard.sidebars.'.auth('web')->user()->role->value)
+            {{-- $sidebar (customer or vendor) comes from DashboardLayoutComposer. --}}
+            @include('dashboard.sidebars.'.$sidebar)
 
             <div class="row">
                 <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">

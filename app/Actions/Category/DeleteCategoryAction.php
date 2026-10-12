@@ -24,7 +24,16 @@ class DeleteCategoryAction
             ));
         }
 
-        // TODO: also block deleting a category that still has products once products exist.
+        $products = $category->products()->count();
+
+        if ($products > 0) {
+            throw new DomainException(sprintf(
+                'This category still has %d %s. Move them to another category first.',
+                $products,
+                $products === 1 ? 'product' : 'products',
+            ));
+        }
+
         $category->delete();
     }
 }

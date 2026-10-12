@@ -1,6 +1,6 @@
 {{--
     Shared by create and edit. Expects: $action, $categories, optional $childCategory (edit), optional $method.
-    The Sub Category dropdown is filled by AJAX from the chosen category (public/admin-assets/js/dependent-select.js).
+    The Sub Category dropdown is filled by AJAX from the chosen category (public/shared-assets/js/dependent-select.js).
 --}}
 @php($childCategory ??= null)
 
@@ -52,5 +52,5 @@
 </form>
 
 @push('scripts')
-    <script src="{{ asset('admin-assets/js/dependent-select.js') }}"></script>
+    <script src="{{ asset('shared-assets/js/dependent-select.js') }}"></script>
 @endpush

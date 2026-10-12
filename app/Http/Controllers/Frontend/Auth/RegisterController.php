@@ -40,6 +40,6 @@ class RegisterController extends Controller
         Auth::guard('web')->login($vendor->user);
         $request->session()->regenerate();
 
-        return redirect()->route('vendor.status')->with('success', 'Your shop was submitted and is waiting for approval.');
+        return redirect()->route('account.seller.show')->with('success', 'Your shop application was submitted and is waiting for approval.');
     }
 }

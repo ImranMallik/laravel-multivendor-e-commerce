@@ -64,6 +64,8 @@
             $('.tooltip').remove(); // tooltips of rows that are about to be replaced
         },
         drawCallback: function () {
+            // Color swatches (data-swatch="#hex"): colored here so the views need no inline styles.
+            $table.find('[data-swatch]').each(function () { this.style.color = this.dataset.swatch; });
             $table.find('[data-toggle="tooltip"]').tooltip();
         }
     });

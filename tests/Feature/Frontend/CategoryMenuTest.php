@@ -304,7 +304,7 @@ class CategoryMenuTest extends TestCase
     {
         [$category, $sub, $child] = $this->chain();
 
-        $this->get(route('category.show', $category->slug))->assertOk()->assertSee('Fashion')->assertSee("Men's")->assertSee('coming soon');
+        $this->get(route('category.show', $category->slug))->assertOk()->assertSee('Fashion')->assertSee("Men's")->assertSee('No products in Fashion yet.');
         $this->get(route('category.sub.show', [$category->slug, $sub->slug]))->assertOk()->assertSee('Jeans');
         $this->get(route('category.child.show', [$category->slug, $sub->slug, $child->slug]))->assertOk()->assertSee('Jeans');
         $this->get(route('shop.index'))->assertOk()->assertSee('Fashion');

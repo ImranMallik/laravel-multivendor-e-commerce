@@ -3,6 +3,10 @@
 @section('title', 'Vendors')
 @section('page-title', 'Vendors')
 
+@section('page-actions')
+    <x-admin.button :href="route('admin.vendors.create')" icon="fas fa-plus">Add Vendor</x-admin.button>
+@endsection
+
 @section('content')
     {{-- Status tabs: clicking one sets the status filter. Counts refresh with every table load. --}}
     <ul class="nav nav-pills mb-4" id="vendor-status-tabs">
@@ -44,6 +48,7 @@
                         <th>Owner</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Source</th>
                         <th>Status</th>
                         <th>Registered</th>
                         <th class="text-right">Actions</th>

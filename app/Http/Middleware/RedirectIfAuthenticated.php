@@ -11,7 +11,7 @@ class RedirectIfAuthenticated
 {
     /**
      * Send already signed-in users to their own area: admin guard to the admin
-     * dashboard, web guard to the customer or vendor dashboard by role.
+     * dashboard, web guard to the customer or vendor dashboard by shop status.
      *
      * @param  Closure(Request): (Response)  $next
      */

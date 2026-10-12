@@ -9,7 +9,12 @@
         <li><a class="{{ request()->routeIs('account.orders') ? 'active' : '' }}" href="{{ route('account.orders') }}"><i class="fas fa-list-ul"></i> Orders</a></li>
         <li><a class="{{ request()->routeIs('account.wishlist') ? 'active' : '' }}" href="{{ route('account.wishlist') }}"><i class="far fa-heart"></i> Wishlist</a></li>
         <li><a class="{{ request()->routeIs('account.profile.*') ? 'active' : '' }}" href="{{ route('account.profile.edit') }}"><i class="far fa-user"></i> My Profile</a></li>
-        <li><a href="{{ route('home') }}"><i class="far fa-store"></i> Back to shop</a></li>
+        @if (auth('web')->user()->isApprovedVendor())
+            <li><a href="{{ route('vendor.dashboard') }}"><i class="far fa-store"></i> Seller dashboard</a></li>
+        @else
+            <li><a class="{{ request()->routeIs('account.seller.*') ? 'active' : '' }}" href="{{ route('account.seller.show') }}"><i class="far fa-store"></i> Become a Seller</a></li>
+        @endif
+        <li><a href="{{ route('home') }}"><i class="far fa-shopping-bag"></i> Back to shop</a></li>
         @include('dashboard.partials.logout-link')
     </ul>
 </div>

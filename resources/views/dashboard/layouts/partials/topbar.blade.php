@@ -2,7 +2,7 @@
 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-3 border-bottom">
     <h4 class="mb-0 text-capitalize">@yield('page-title', 'Dashboard')</h4>
     <div class="d-flex align-items-center gap-3">
-        @if ($currentUser->isVendor() && $currentUser->vendor)
+        @if ($currentUser->isApprovedVendor() && request()->routeIs('vendor.*'))
             <img src="{{ $currentUser->vendor->logo_url }}" alt="{{ $currentUser->vendor->shop_name }}"
                  class="rounded-circle avatar-cover" width="40" height="40">
             <span class="fw-semibold">{{ $currentUser->vendor->shop_name }}</span>

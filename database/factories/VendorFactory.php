@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\UserRole;
+use App\Enums\VendorSource;
 use App\Enums\VendorStatus;
 use App\Models\User;
 use App\Models\Vendor;
@@ -18,13 +18,20 @@ class VendorFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->state(['role' => UserRole::Vendor]),
+            'user_id' => User::factory(),
             'shop_name' => fake()->unique()->company(),
             'slug' => fn (array $attributes) => Vendor::uniqueSlug($attributes['shop_name']),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
             'status' => VendorStatus::Pending,
+            'source' => VendorSource::Application,
+            'applied_at' => now(),
         ];
+    }
+
+    public function createdByAdmin(): static
+    {
+        return $this->state(fn () => ['source' => VendorSource::Admin, 'applied_at' => null]);
     }
 
     public function approved(): static

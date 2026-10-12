@@ -2,23 +2,16 @@
 
 namespace App\Actions\Admin;
 
-use App\Enums\VendorStatus;
-use App\Events\VendorApproved;
+use App\Models\Admin;
 use App\Models\Vendor;
+use App\Services\VendorStatusService;
 
 class ApproveVendorAction
 {
-    public function execute(Vendor $vendor): Vendor
+    public function __construct(private readonly VendorStatusService $status) {}
+
+    public function execute(Vendor $vendor, ?Admin $admin = null): Vendor
     {
-        VendorStatusTransition::assert($vendor, VendorStatus::Approved);
-
-        $vendor->status = VendorStatus::Approved;
-        $vendor->rejection_reason = null;
-        $vendor->approved_at = now();
-        $vendor->save();
-
-        event(new VendorApproved($vendor));
-
-        return $vendor;
+        return $this->status->approve($vendor, $admin);
     }
 }
