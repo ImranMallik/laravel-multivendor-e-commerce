@@ -33,6 +33,15 @@
                     </li>
                 </ul>
             </li>
+            {{-- Add Products, Attributes, ... as further <li> items and list their routes in routeIs(). --}}
+            <li class="dropdown {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-box"></i> <span>Product</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.brands.index') }}">Brands</a>
+                    </li>
+                </ul>
+            </li>
             <li class="{{ request()->routeIs('admin.sliders.*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.sliders.index') }}">
                     <i class="fas fa-images"></i> <span>Sliders</span>

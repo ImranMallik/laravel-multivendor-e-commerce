@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\ResetPasswordController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CategorySubCategoryController;
 use App\Http\Controllers\Admin\ChildCategoryController;
@@ -63,6 +64,12 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     Route::get('child-categories/data', [ChildCategoryController::class, 'data'])->name('child-categories.data');
     Route::patch('child-categories/{child_category}/status', [ChildCategoryController::class, 'status'])->name('child-categories.status');
     Route::resource('child-categories', ChildCategoryController::class)->except('show');
+
+    // Product catalog.
+    Route::get('brands/data', [BrandController::class, 'data'])->name('brands.data');
+    Route::patch('brands/{brand}/status', [BrandController::class, 'status'])->name('brands.status');
+    Route::patch('brands/{brand}/featured', [BrandController::class, 'featured'])->name('brands.featured');
+    Route::resource('brands', BrandController::class)->except('show');
 
     // Website content: home banner sliders.
     Route::get('sliders/data', [SliderController::class, 'data'])->name('sliders.data');

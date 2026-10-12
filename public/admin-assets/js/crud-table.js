@@ -82,7 +82,8 @@
 
         $.ajax({url: $switch.data('url'), method: 'PATCH', dataType: 'json'})
             .done(function (response) {
-                $switch.prop('checked', response.is_active);
+                // data-field names the JSON key to follow (is_featured, ...); the default is is_active.
+                $switch.prop('checked', response[$switch.data('field') || 'is_active']);
                 success(response.message);
             })
             .fail(function (xhr) {
