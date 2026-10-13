@@ -20,12 +20,16 @@ class ProductRepository
 {
     public const HOME_CACHE_KEY = 'frontend.home_products';
 
+    /** Category tabs in "Top Categories Of The Month" (besides "all"). */
+    public const TOP_TABS = 6;
+
     /**
      * @return array{
      *     flash: Collection<int, Product>,
      *     flash_ends_at: CarbonInterface|null,
      *     top: Collection<int, Product>,
-     *     top_categories: \Illuminate\Support\Collection<int, Category>,
+     *     top_categories: Collection<int, Category>,
+     *     top_tiles: \Illuminate\Support\Collection<int, array{product: Product, filters: string}>,
      *     featured_categories: \Illuminate\Support\Collection<int, Category>,
      *     hot_offers: Collection<int, Product>,
      *     featured: Collection<int, Product>,
@@ -129,8 +133,7 @@ class ProductRepository
             'flash' => $flash,
             'flash_ends_at' => $flash->first()?->offer_ends_at,
             'top' => $top,
-            // Filter tabs: the categories of the listed products, in first-seen order.
-            'top_categories' => $top->pluck('category')->filter()->unique('id')->values(),
+            ...$this->topCategoryTabs($top, $limit),
             'featured_categories' => $featured->pluck('category')->filter()->unique('id')->values(),
             // The three large "hot deal" cards: featured products with a running offer.
             'hot_offers' => $featured->filter(fn (Product $product) => $product->hasValidOffer())->take(3)->values(),
@@ -139,6 +142,60 @@ class ProductRepository
             'best' => $this->visible()->flagged(ProductFlag::Best->value)->latest('id')->limit(9)->get(),
             // TODO: "weekly best rated" needs reviews; until then it shows the newest products.
             'newest' => $this->visible()->latest('id')->limit(9)->get(),
+        ];
+    }
+
+    /**
+     * "Top Categories Of The Month": an "all" tab with the Top products plus up to TOP_TABS active
+     * categories that have visible products (most Top products first), each with up to $limit products
+     * (Top ones first, then newest). Every product is rendered once; its filter classes say which tabs
+     * show it, so the isotope tabs switch without reloading or duplicating cards.
+     *
+     * @param  Collection<int, Product>  $top
+     * @return array{top_categories: \Illuminate\Support\Collection<int, Category>, top_tiles: \Illuminate\Support\Collection<int, array{product: Product, filters: string}>}
+     */
+    private function topCategoryTabs(Collection $top, int $limit): array
+    {
+        $visible = fn (Builder $query) => $query->visibleOnStorefront();
+
+        $categories = Category::active()
+            ->whereHas('products', $visible)
+            ->withCount([
+                'products as top_products_count' => fn (Builder $query) => $query->visibleOnStorefront()->flagged(ProductFlag::Top->value),
+                'products as visible_products_count' => $visible,
+            ])
+            ->orderByDesc('top_products_count')
+            ->orderByDesc('visible_products_count')
+            ->orderBy('name')
+            ->limit(self::TOP_TABS)
+            ->get(['id', 'name', 'slug']);
+
+        /** @var array<int, array{product: Product, filters: array<int, string>}> $tiles */
+        $tiles = [];
+
+        foreach ($top as $product) {
+            $tiles[$product->id] = ['product' => $product, 'filters' => ['top-all']];
+        }
+
+        foreach ($categories as $category) {
+            $products = $this->visible()
+                ->where('products.category_id', $category->id)
+                ->orderByDesc('products.'.ProductFlag::Top->value)
+                ->latest('products.id')
+                ->limit($limit)
+                ->get();
+
+            foreach ($products as $product) {
+                $tiles[$product->id] ??= ['product' => $product, 'filters' => []];
+                $tiles[$product->id]['filters'][] = 'top-cat-'.$category->id;
+            }
+        }
+
+        return [
+            'top_categories' => $categories,
+            'top_tiles' => collect($tiles)
+                ->map(fn (array $tile) => ['product' => $tile['product'], 'filters' => implode(' ', $tile['filters'])])
+                ->values(),
         ];
     }
 }

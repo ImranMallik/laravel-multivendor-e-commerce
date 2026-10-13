@@ -26,7 +26,7 @@
 
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/responsive.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend-assets/css/storefront.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend-assets/css/custom.css') }}">
     <!-- <link rel="stylesheet" href="css/rtl.css"> -->
     @stack('styles')
 </head>
@@ -147,6 +147,7 @@
     <!--main/custom js-->
     <script src="{{ asset('frontend-assets/js/main.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/product-countdown.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/top-categories.js') }}"></script>
     @include('frontend.layouts.flash')
 </body>
 

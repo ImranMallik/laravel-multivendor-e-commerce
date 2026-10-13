@@ -1,0 +1,176 @@
+/* Small additions to the storefront template (loaded after style.css / responsive.css). */
+
+/* Flash sell banner: the template set this background inline with a relative path. */
+.flash_sell_banner {
+  background: url(../images/flash_sell_bg.jpg);
+}
+
+/* Product images keep their shape inside the template's fixed boxes. */
+.wsus__product_item .wsus__pro_link img,
+.wsus__hot_deals__single_img img,
+.wsus__hot_deals_img img {
+  object-fit: cover;
+  height: auto;
+}
+
+/* Long product descriptions (sanitized HTML) never overflow the tab. */
+.wsus__description_area img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Variant options on the product page (the template styles Color swatches and Size buttons). */
+.wsus_pro_det_color ul li a.is-selected i {
+  opacity: 1;
+}
+
+.wsus_pro_det_color ul li a.is-selected {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #08C;
+}
+
+.wsus_pro__det_size ul li a.variant-option {
+  width: auto;
+  min-width: 30px;
+  padding: 0 10px;
+  border-radius: 15px;
+}
+
+.wsus_pro__det_size ul li a.is-selected {
+  color: #fff;
+  border-color: #08C;
+  background: #08C;
+}
+
+.wsus_pro_det_color ul li a.is-disabled,
+.wsus_pro__det_size ul li a.is-disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.wsus__button_area li button.add_cart {
+  border: 0;
+  cursor: pointer;
+}
+
+.wsus__button_area li button.add_cart:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.wsus__quentity .number_area {
+  width: 90px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+}
+
+/* ---------- Small product tiles (x-frontend.product-mini): equal-size cards ---------- */
+/* Name, rating and price keep one line each; in the price row the old price gives way first and
+   the current price is cut only when it alone does not fit. */
+.wsus__hot_deals__single .wsus__rating {
+  white-space: nowrap;
+}
+
+.wsus__hot_deals__single .wsus__tk {
+  gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.wsus__hot_deals__single .wsus__tk > * {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wsus__hot_deals__single .wsus__tk_current {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.wsus__hot_deals__single .wsus__tk del {
+  flex: 0 1 auto;
+  margin-left: 0;
+}
+
+/* Top Categories Of The Month and the hot deals strip stack image and text (template
+   .wsus__monthly_top_2 .grid / .wsus__hot_small_item_2), and the template lets each card grow with
+   its image. Here the image box has the template picture's shape (380x317, about 6:5), so every
+   card in a row has the same size whatever the image. */
+#wsus__monthly_top .grid .wsus__hot_deals__single,
+.wsus__hot_small_item_2 .wsus__hot_deals__single {
+  display: flex;
+  flex-direction: column;
+}
+
+#wsus__monthly_top .grid .wsus__hot_deals__single_img,
+.wsus__hot_small_item_2 .wsus__hot_deals__single_img {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  aspect-ratio: 6 / 5;
+  float: none;
+  overflow: hidden;
+}
+
+#wsus__monthly_top .grid .wsus__hot_deals__single_img img,
+.wsus__hot_small_item_2 .wsus__hot_deals__single_img img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+#wsus__monthly_top .grid .wsus__hot_deals__single_text,
+.wsus__hot_small_item_2 .wsus__hot_deals__single_text {
+  min-width: 0;
+  float: none;
+}
+
+/* Tabs stay on one line beside (or, below 992px, under) the title and scroll sideways when they do not fit. */
+#wsus__monthly_top .wsus__section_header h3 {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+#wsus__monthly_top .monthly_top_filter {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  max-width: 100%;
+  margin-left: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#wsus__monthly_top .monthly_top_filter button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+  #wsus__monthly_top .wsus__section_header h3 {
+    white-space: normal;
+  }
+
+  #wsus__monthly_top .monthly_top_filter {
+    margin-left: 0;
+    padding-bottom: 4px;
+  }
+
+  /* The template centers the tabs here; centering an overflowing row would hide its start, so the
+     auto margins center a short row and fall back to the left edge when the row scrolls. */
+  #wsus__monthly_top .monthly_top_filter::before,
+  #wsus__monthly_top .monthly_top_filter::after {
+    content: "";
+    margin: auto;
+  }
+
+  #wsus__monthly_top .monthly_top_filter {
+    justify-content: flex-start;
+  }
+}
