@@ -66,8 +66,8 @@
 }
 
 /* ---------- Small product tiles (x-frontend.product-mini): equal-size cards ---------- */
-/* Name, rating and price keep one line each; in the price row the old price gives way first and
-   the current price is cut only when it alone does not fit. */
+/* Name, rating and price keep one line each; in the price row the current price (bare text, as in the
+   template) keeps its width and the old price gives way with "…" when both do not fit. */
 .wsus__hot_deals__single .wsus__rating {
   white-space: nowrap;
 }
@@ -84,28 +84,25 @@
   text-overflow: ellipsis;
 }
 
-.wsus__hot_deals__single .wsus__tk_current {
-  flex: 0 0 auto;
-  max-width: 100%;
-}
-
 .wsus__hot_deals__single .wsus__tk del {
   flex: 0 1 auto;
   margin-left: 0;
 }
 
-/* Top Categories Of The Month and the hot deals strip stack image and text (template
-   .wsus__monthly_top_2 .grid / .wsus__hot_small_item_2), and the template lets each card grow with
-   its image. Here the image box has the template picture's shape (380x317, about 6:5), so every
+/* Top Categories Of The Month, the hot deals strip and Weekly Best stack image and text (template
+   .wsus__monthly_top_2 .grid / .wsus__hot_small_item_2 / .weekly_best2), and the template lets each card grow with
+   its image. The card is a block (it fills its column or slide minus the template's margins). Here the image box has the template picture's shape (380x317, about 6:5), so every
    card in a row has the same size whatever the image. */
 #wsus__monthly_top .grid .wsus__hot_deals__single,
-.wsus__hot_small_item_2 .wsus__hot_deals__single {
+.wsus__hot_small_item_2 .wsus__hot_deals__single,
+#wsus__weekly_best .weekly_best2 .wsus__hot_deals__single {
   display: flex;
   flex-direction: column;
 }
 
 #wsus__monthly_top .grid .wsus__hot_deals__single_img,
-.wsus__hot_small_item_2 .wsus__hot_deals__single_img {
+.wsus__hot_small_item_2 .wsus__hot_deals__single_img,
+#wsus__weekly_best .weekly_best2 .wsus__hot_deals__single_img {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
@@ -117,7 +114,8 @@
 }
 
 #wsus__monthly_top .grid .wsus__hot_deals__single_img img,
-.wsus__hot_small_item_2 .wsus__hot_deals__single_img img {
+.wsus__hot_small_item_2 .wsus__hot_deals__single_img img,
+#wsus__weekly_best .weekly_best2 .wsus__hot_deals__single_img img {
   width: auto;
   max-width: 100%;
   height: auto;
@@ -126,7 +124,8 @@
 }
 
 #wsus__monthly_top .grid .wsus__hot_deals__single_text,
-.wsus__hot_small_item_2 .wsus__hot_deals__single_text {
+.wsus__hot_small_item_2 .wsus__hot_deals__single_text,
+#wsus__weekly_best .weekly_best2 .wsus__hot_deals__single_text {
   min-width: 0;
   float: none;
 }
@@ -209,13 +208,6 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   min-height: 3em;
-}
-
-/* Weekly Best tiles: the template sizes each tile by its photo; product photos have different shapes,
-   so the photo sits in a square box instead (the whole photo stays visible). */
-#wsus__weekly_best .wsus__hot_deals__single_img img {
-  aspect-ratio: 1 / 1;
-  object-fit: contain;
 }
 
 /* Price row of product cards: one line. A "From ₹X" price with its old price could wrap to a second line
@@ -444,4 +436,12 @@
 /* The template's demo title is short; a long product name ran under the close button (top right). */
 .product_popup_modal .wsus__pro_details_text .title {
   padding-right: 35px;
+}
+
+/* Weekly Best: the template's tile is an inline-block link (with overflow: hidden), which leaves the line's
+   descender space under it in each slide. Same display here, at the slide width minus the template's
+   12px + 12px margins; the image box and the text are blocks inside it and stack as in the template. */
+#wsus__weekly_best .weekly_best2 .wsus__hot_deals__single {
+  display: inline-block;
+  width: calc(100% - 24px);
 }

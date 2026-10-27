@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\ProductFlag;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\HomeProductService;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,6 +47,8 @@ class ProductRepository
     public function flush(): void
     {
         Cache::forget(self::HOME_CACHE_KEY);
+        // The weekly best lists depend on the same products, flags and visibility.
+        HomeProductService::flush();
     }
 
     /**
@@ -140,7 +143,7 @@ class ProductRepository
             'featured' => $featured,
             'category_sections' => $categorySections,
             'best' => $this->visible()->flagged(ProductFlag::Best->value)->latest('id')->limit(9)->get(),
-            // TODO: "weekly best rated" needs reviews; until then it shows the newest products.
+            // The small tiles under the hot deals. (Weekly Best has its own lists: App\Services\HomeProductService.)
             'newest' => $this->visible()->latest('id')->limit(9)->get(),
         ];
     }
