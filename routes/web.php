@@ -8,6 +8,8 @@ use App\Http\Controllers\Frontend\Auth\ForgotPasswordController;
 use App\Http\Controllers\Frontend\Auth\LoginController;
 use App\Http\Controllers\Frontend\Auth\RegisterController;
 use App\Http\Controllers\Frontend\Auth\ResetPasswordController;
+use App\Http\Controllers\Frontend\BlogCommentController;
+use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
@@ -39,6 +41,18 @@ Route::controller(ShopController::class)->group(function () {
 // Product page and public vendor shop pages (404 unless visible / approved).
 Route::get('product/{slug}', [ProductController::class, 'show'])->name('product.show');
 Route::get('store/{slug}', [StoreController::class, 'show'])->name('store.show');
+
+// Blog. The preview route is only reachable through the signed link the admin panel creates.
+Route::controller(BlogController::class)->prefix('blog')->name('frontend.blog.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('category/{slug}', 'category')->name('category');
+    Route::get('tag/{slug}', 'tag')->name('tag');
+    Route::get('preview/{blog}', 'preview')->middleware('signed')->name('preview');
+    Route::get('{slug}', 'show')->name('show');
+});
+Route::post('blog/{slug}/comments', [BlogCommentController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('frontend.blog.comments.store');
 
 // Add to cart (validates the product and its variant; the cart itself comes later).
 Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');

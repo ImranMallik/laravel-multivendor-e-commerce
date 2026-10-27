@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Models\Attribute;
 use App\Models\AttributeValue;
+use App\Models\Blog;
+use App\Models\BlogCategory;
+use App\Models\BlogComment;
+use App\Models\BlogTag;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\ChildCategory;
@@ -12,6 +16,7 @@ use App\Models\ProductVariant;
 use App\Models\Slider;
 use App\Models\SubCategory;
 use App\Models\Vendor;
+use App\Observers\BlogCacheObserver;
 use App\Observers\BrandObserver;
 use App\Observers\CatalogCacheObserver;
 use App\Observers\CategoryTreeObserver;
@@ -44,6 +49,12 @@ class AppServiceProvider extends ServiceProvider
     {
         // Clears the home banner cache whenever a slider changes.
         Slider::observe(SliderObserver::class);
+
+        // Blog home posts and sidebar widgets are cached; any blog change clears them.
+        Blog::observe(BlogCacheObserver::class);
+        BlogCategory::observe(BlogCacheObserver::class);
+        BlogTag::observe(BlogCacheObserver::class);
+        BlogComment::observe(BlogCacheObserver::class);
 
         // Clears the featured brands cache (home brand slider) whenever a brand changes.
         Brand::observe(BrandObserver::class);

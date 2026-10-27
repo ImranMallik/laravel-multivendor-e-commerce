@@ -174,3 +174,101 @@
     justify-content: flex-start;
   }
 }
+
+/* ---------- Blog (home section, listing, related posts, sidebar) ---------- */
+/* The template's demo titles never pass two lines, so its cards are all the same height. Real titles
+   can be longer: clamp them to two lines and always reserve two lines (the template's line-height is
+   25px at every breakpoint), so every blog card in a row is the same height. */
+.wsus__single_blog_2 .wsus__blog_text_center a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: 50px;
+}
+
+/* Popular posts: the template uses square 80 x 80 pictures; post images are wider, so keep the
+   thumbnail square (the template already crops with object-fit: cover) and the title to two lines. */
+.wsus__blog_post_img img {
+  aspect-ratio: 1 / 1;
+}
+
+.wsus__blog_post_text a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ---------- Product cards: equal height ---------- */
+/* Long product names wrapped to one or two lines, so cards in the same row differed by a line.
+   The name is clamped to two lines and always reserves two (line-height 1.5 from Bootstrap's body). */
+.wsus__product_details .wsus__pro_name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  min-height: 3em;
+}
+
+/* Weekly Best tiles: the template sizes each tile by its photo; product photos have different shapes,
+   so the photo sits in a square box instead (the whole photo stays visible). */
+#wsus__weekly_best .wsus__hot_deals__single_img img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+/* Price row of product cards: one line. A "From ₹X" price with its old price could wrap to a second line
+   and make that card taller; the old price now shortens with "…" instead. */
+.wsus__product_details .wsus__price {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.wsus__product_details .wsus__price del {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 575.98px) {
+  /* Long breadcrumb trails (product names) wrap instead of pushing the page wider than the phone. */
+  #wsus__breadcrumb ul {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  /* Flash sell countdown: four 90px boxes do not fit a phone (they pushed the page wider than the screen). */
+  .wsus__flash_sell_2 .wsus__flash_coundown {
+    padding: 20px 10px;
+  }
+
+  .wsus__flash_sell_2 .simply-countdown {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .wsus__flash_sell_2 .simply-section.simply-days-section,
+  .wsus__flash_sell_2 .simply-section.simply-hours-section,
+  .wsus__flash_sell_2 .simply-section.simply-minutes-section,
+  .wsus__flash_sell_2 .simply-section.simply-seconds-section {
+    width: 64px;
+    height: 72px;
+    line-height: 30px;
+    margin: 0 3px 6px;
+  }
+
+  .wsus__flash_sell_2 .simply-amount {
+    font-size: 26px;
+    height: 42px;
+    line-height: 42px;
+  }
+
+  .wsus__flash_sell_2 .simply-word {
+    height: 28px;
+    line-height: 28px;
+    font-size: 11px;
+  }
+}

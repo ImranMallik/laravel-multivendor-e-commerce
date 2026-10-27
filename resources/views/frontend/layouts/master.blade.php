@@ -9,6 +9,7 @@
     <title>@yield('title', config('app.name'))</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="@yield('meta_description', config('app.name'))">
+    @stack('meta')
     <link rel="icon" type="image/png" href="{{ asset('frontend-assets/images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/bootstrap.min.css') }}">

@@ -34,4 +34,7 @@ return [
     // TODO: move to an admin settings screen.
     'home_category_sections' => ['electronics', 'fashion'],
 
+    // Store time zone: admins enter and see blog publish times in it. Times are stored in UTC (app.timezone).
+    'timezone' => env('STORE_TIMEZONE', 'Asia/Kolkata'),
+
 ];

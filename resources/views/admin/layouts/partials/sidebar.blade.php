@@ -59,6 +59,23 @@
                     <i class="fas fa-images"></i> <span>Sliders</span>
                 </a>
             </li>
+            <li class="dropdown {{ request()->routeIs('admin.blog-categories.*', 'admin.blogs.*', 'admin.blog-comments.*') ? 'active' : '' }}">
+                <a href="#" class="nav-link has-dropdown"><i class="fas fa-blog"></i> <span>Blog</span></a>
+                <ul class="dropdown-menu">
+                    <li class="{{ request()->routeIs('admin.blog-categories.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.blog-categories.index') }}">Categories</a>
+                    </li>
+                    <li class="{{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.blogs.index') }}">Posts</a>
+                    </li>
+                    <li class="{{ request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}">
+                        {{-- $pendingCommentsCount comes from AdminSidebarComposer. --}}
+                        <a class="nav-link" href="{{ route('admin.blog-comments.index') }}">Comments
+                            @if ($pendingCommentsCount)<span class="badge badge-warning ml-1">{{ $pendingCommentsCount }}</span>@endif
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </aside>
 </div>

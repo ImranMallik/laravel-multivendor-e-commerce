@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminSeeder::class);
 
+        // Sample blog posts (after AdminSeeder: the first admin is their author).
+        $this->call(BlogSeeder::class);
+
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([

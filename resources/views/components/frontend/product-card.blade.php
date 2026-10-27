@@ -24,7 +24,7 @@
         @if ($product->category)
             <a class="wsus__category" href="{{ route('category.show', $product->category->slug) }}">{{ $product->category->name }}</a>
         @endif
-        <a class="wsus__pro_name" href="{{ route('product.show', $product->slug) }}">{{ $product->name }}</a>
+        <a class="wsus__pro_name" href="{{ route('product.show', $product->slug) }}" title="{{ $product->name }}">{{ $product->name }}</a>
         <p class="wsus__price">{{ $product->current_price_label }}
             @if ($product->discount_percent > 0)
                 <del>{{ $product->price_label }}</del>

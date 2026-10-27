@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\ResetPasswordController;
+use App\Http\Controllers\Admin\BlogCategoryController;
+use App\Http\Controllers\Admin\BlogCommentController;
+use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ChildCategoryController;
@@ -102,6 +105,25 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     Route::get('sliders/data', [SliderController::class, 'data'])->name('sliders.data');
     Route::patch('sliders/{slider}/status', [SliderController::class, 'status'])->name('sliders.status');
     Route::resource('sliders', SliderController::class)->except('show');
+
+    // Blog: categories, posts (with editor image uploads and signed storefront previews) and comment moderation.
+    Route::get('blog-categories/data', [BlogCategoryController::class, 'data'])->name('blog-categories.data');
+    Route::patch('blog-categories/{blog_category}/status', [BlogCategoryController::class, 'status'])->name('blog-categories.status');
+    Route::resource('blog-categories', BlogCategoryController::class)->except('show');
+
+    Route::get('blogs/data', [BlogController::class, 'data'])->name('blogs.data');
+    Route::post('blogs/editor-image', [BlogController::class, 'editorImage'])->name('blogs.editor-image');
+    Route::patch('blogs/{blog}/show-on-home', [BlogController::class, 'showOnHome'])->name('blogs.show-on-home');
+    Route::get('blogs/{blog}/preview', [BlogController::class, 'preview'])->name('blogs.preview');
+    Route::resource('blogs', BlogController::class)->except('show');
+
+    Route::controller(BlogCommentController::class)->prefix('blog-comments')->name('blog-comments.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('data', 'data')->name('data');
+        Route::patch('{blog_comment}/approve', 'approve')->name('approve');
+        Route::patch('{blog_comment}/spam', 'spam')->name('spam');
+        Route::delete('{blog_comment}', 'destroy')->name('destroy');
+    });
 
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
         Route::get('/', 'edit')->name('edit');

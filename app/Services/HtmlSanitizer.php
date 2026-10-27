@@ -11,6 +11,9 @@ use HTMLPurifier_Config;
  */
 class HtmlSanitizer
 {
+    /** Template classes allowed in rich text: the blog quote box (div.wsus__blog_quot_area with i.far.fa-quote-left). */
+    public const ALLOWED_CLASSES = ['wsus__blog_quot_area', 'far', 'fa-quote-left'];
+
     private ?HTMLPurifier $purifier = null;
 
     public function clean(?string $html): ?string
@@ -32,15 +35,19 @@ class HtmlSanitizer
 
         $config = HTMLPurifier_Config::createDefault();
         $config->set('HTML.Allowed', implode(',', [
-            'p', 'br', 'hr', 'div', 'span[style]', 'b', 'strong', 'i', 'em', 'u', 's', 'strike', 'sub', 'sup',
+            'p', 'br', 'hr', 'div[class]', 'span[style]', 'b', 'strong', 'i[class]', 'em', 'u', 's', 'strike', 'sub', 'sup',
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
             'ul', 'ol', 'li', 'a[href|title|target]', 'img[src|alt|width|height]',
             'table', 'thead', 'tbody', 'tr', 'th[colspan|rowspan]', 'td[colspan|rowspan]',
         ]));
+        // Only the storefront template's own content classes survive (the blog quote box), nothing else.
+        $config->set('Attr.AllowedClasses', self::ALLOWED_CLASSES);
         $config->set('CSS.AllowedProperties', ['color', 'background-color', 'text-align', 'font-weight', 'font-style', 'text-decoration']);
         $config->set('URI.AllowedSchemes', ['http' => true, 'https' => true, 'mailto' => true]);
         $config->set('Attr.AllowedFrameTargets', ['_blank']);
         $config->set('AutoFormat.RemoveEmpty', true);
+        // Keep empty table cells (HTMLPurifier default) and the quote box icon (<i class="far fa-quote-left"></i>).
+        $config->set('AutoFormat.RemoveEmpty.Predicate', ['colgroup' => [], 'th' => [], 'td' => [], 'iframe' => ['src'], 'i' => ['class']]);
 
         $cache = storage_path('framework/cache/htmlpurifier');
 
