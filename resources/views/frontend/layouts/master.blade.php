@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <title>@yield('title', config('app.name'))</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="cart-add-url" content="{{ route('cart.add') }}">
     <meta name="description" content="@yield('meta_description', config('app.name'))">
     @stack('meta')
     <link rel="icon" type="image/png" href="{{ asset('frontend-assets/images/favicon.png') }}">
@@ -94,6 +95,8 @@
     ==============================-->
 
 
+    @include('frontend.partials.quick-view-modal')
+
     <!--============================
         SCROLL BUTTON START
     ==============================-->
@@ -149,6 +152,12 @@
     <script src="{{ asset('frontend-assets/js/main.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/product-countdown.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/top-categories.js') }}"></script>
+    {{-- Cart / wishlist / compare placeholders, variant picker and the quick view (after main.js and product-countdown.js). --}}
+    <script src="{{ asset('frontend-assets/js/cart.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/wishlist.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/compare.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/product-variants.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/quick-view.js') }}"></script>
     @include('frontend.layouts.flash')
 </body>
 

@@ -272,3 +272,176 @@
     font-size: 11px;
   }
 }
+
+/* ---------- Product card actions (eye / heart / shuffle, add to cart) ---------- */
+/* The template shows the three icons on hover only; touch screens have no hover, so there they always show. */
+@media (hover: none) {
+  .wsus__product_item .wsus__single_pro_icon {
+    opacity: 1;
+  }
+}
+
+/* "out of stock" / no valid option: the template's blue bar, greyed out. */
+.add_cart[aria-disabled="true"],
+.add_cart[aria-disabled="true"]:hover {
+  background: #aaa;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+/* While the quick view loads, the clicked eye (or add to cart) shows a small spinner. */
+.wsus__single_pro_icon li a.is-loading {
+  position: relative;
+}
+
+.wsus__single_pro_icon li a.is-loading i {
+  visibility: hidden;
+}
+
+.wsus__single_pro_icon li a.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: quick-view-spin 0.7s linear infinite;
+}
+
+.add_cart.is-loading {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+@keyframes quick-view-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Quick view modal: skeleton loader and fade-in ---------- */
+/* Same two columns as the product body (the template's modal body has a fixed height and scrolls inside),
+   so swapping the real content in does not move anything. Theme blue shimmer. */
+.product_popup_modal .quick_view_skeleton_img,
+.product_popup_modal .quick_view_skeleton_bar,
+.product_popup_modal .quick_view_skeleton_dot,
+.product_popup_modal .quick_view_skeleton_chip {
+  display: block;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #e9f2f9 0%, #d4e7f5 40%, #e9f2f9 80%);
+  background-size: 300% 100%;
+  animation: quick-view-shimmer 1.3s ease-in-out infinite;
+}
+
+.product_popup_modal .quick_view_skeleton_img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 440px;
+}
+
+.product_popup_modal .quick_view_skeleton_text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 4px;
+}
+
+.product_popup_modal .quick_view_skeleton_bar {
+  height: 14px;
+  width: 100%;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-title {
+  height: 24px;
+  width: 75%;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-badge {
+  width: 35%;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-price {
+  height: 26px;
+  width: 45%;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-rating {
+  width: 30%;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-short {
+  width: 70%;
+}
+
+.product_popup_modal .quick_view_skeleton_row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-label {
+  width: 70px;
+  flex: 0 0 70px;
+}
+
+.product_popup_modal .quick_view_skeleton_dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.product_popup_modal .quick_view_skeleton_chip {
+  width: 40px;
+  height: 30px;
+}
+
+.product_popup_modal .quick_view_skeleton_bar.is-button {
+  height: 40px;
+  width: 130px;
+  flex: 0 0 130px;
+}
+
+.product_popup_modal .quick_view_content {
+  animation: quick-view-fade 0.25s ease-out both;
+}
+
+@keyframes quick-view-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes quick-view-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product_popup_modal .quick_view_skeleton_img,
+  .product_popup_modal .quick_view_skeleton_bar,
+  .product_popup_modal .quick_view_skeleton_dot,
+  .product_popup_modal .quick_view_skeleton_chip,
+  .product_popup_modal .quick_view_content,
+  .wsus__single_pro_icon li a.is-loading::after {
+    animation: none;
+  }
+}
+
+/* The template's demo title is short; a long product name ran under the close button (top right). */
+.product_popup_modal .wsus__pro_details_text .title {
+  padding-right: 35px;
+}

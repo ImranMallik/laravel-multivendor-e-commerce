@@ -268,6 +268,8 @@ class Product extends Model
             'id' => $variant->id,
             'values' => $variant->values->pluck('id')->map(fn ($id) => (int) $id)->values()->all(),
             'sku' => $variant->sku,
+            // Numbers for the live total (price × quantity) in the browser.
+            'current_price' => (float) $variant->current_price,
             'current_price_label' => $variant->current_price_label,
             'price_label' => $variant->price_label,
             'discount_percent' => $variant->discount_percent,

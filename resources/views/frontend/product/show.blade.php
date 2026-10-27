@@ -39,7 +39,10 @@
                         </div>
                     </div>
                     <div class="col-xl-5 col-md-7 col-lg-7">
-                        <div class="wsus__pro_details_text">
+                        {{-- data-product-root: product-variants.js (options, price, stock) and cart.js (the add to cart form). --}}
+                        <div class="wsus__pro_details_text" data-product-root data-product-id="{{ $product->id }}"
+                             data-currency="{{ config('marketplace.currency_symbol') }}"
+                             data-unit-price="{{ (float) $product->current_price }}" data-stock-qty="{{ $product->total_stock }}">
                             <h1 class="title h4">{{ $product->name }}</h1>
                             {{-- Variant products start on their default variant; product-variants.js switches it in the browser. --}}
                             @php($initial = $product->has_variants ? $product->defaultVariant() : null)
@@ -98,7 +101,7 @@
                                 @endif
                                 <div class="wsus__quentity">
                                     <h5>quantity :</h5>
-                                    <input class="number_area" type="number" name="quantity" min="1" value="1" aria-label="Quantity">
+                                    <input class="number_area" type="number" name="quantity" min="1" value="1" aria-label="Quantity" data-quantity>
                                 </div>
                                 <ul class="wsus__button_area">
                                     {{-- TODO: the cart itself arrives with the cart module; for now the selected variant id is validated and echoed back. --}}
@@ -251,8 +254,3 @@
     @endif
 @endsection
 
-@if ($product->has_variants)
-    @push('scripts')
-        <script src="{{ asset('frontend-assets/js/product-variants.js') }}"></script>
-    @endpush
-@endif

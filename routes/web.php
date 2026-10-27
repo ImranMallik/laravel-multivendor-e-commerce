@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\QuickViewController;
 use App\Http\Controllers\Frontend\ShopController;
 use App\Http\Controllers\Frontend\StoreController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,9 @@ Route::controller(BlogController::class)->prefix('blog')->name('frontend.blog.')
 Route::post('blog/{slug}/comments', [BlogCommentController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('frontend.blog.comments.store');
+
+// Quick view modal body (HTML inside JSON); 404 JSON unless the product is visible on the storefront.
+Route::get('quick-view/{slug}', QuickViewController::class)->name('frontend.products.quick-view');
 
 // Add to cart (validates the product and its variant; the cart itself comes later).
 Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
