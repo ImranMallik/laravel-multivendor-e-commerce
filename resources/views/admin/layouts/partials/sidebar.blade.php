@@ -76,6 +76,11 @@
                     </li>
                 </ul>
             </li>
+            <li class="{{ request()->routeIs('admin.search-terms.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.search-terms.index') }}">
+                    <i class="fas fa-search"></i> <span>Search Terms</span>
+                </a>
+            </li>
         </ul>
     </aside>
 </div>

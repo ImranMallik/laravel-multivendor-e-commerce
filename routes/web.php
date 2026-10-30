@@ -14,6 +14,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProductController;
 use App\Http\Controllers\Frontend\QuickViewController;
+use App\Http\Controllers\Frontend\SearchSuggestionController;
 use App\Http\Controllers\Frontend\ShopController;
 use App\Http\Controllers\Frontend\StoreController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,11 @@ Route::controller(ShopController::class)->group(function () {
     Route::get('category/{categorySlug}/{subSlug}', 'subCategory')->name('category.sub.show');
     Route::get('category/{categorySlug}/{subSlug}/{childSlug}', 'childCategory')->name('category.child.show');
 });
+
+// Live suggestions under the header / mobile search box (JSON). Submitted searches go to shop.index?search=.
+Route::get('search/suggestions', SearchSuggestionController::class)
+    ->middleware('throttle:search')
+    ->name('frontend.search.suggestions');
 
 // Product page and public vendor shop pages (404 unless visible / approved).
 Route::get('product/{slug}', [ProductController::class, 'show'])->name('product.show');

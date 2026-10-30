@@ -445,3 +445,256 @@
   display: inline-block;
   width: calc(100% - 24px);
 }
+
+/* ---------- Search: live suggestions under the header / mobile menu search box (search.js) ---------- */
+
+/* The template's search form clips its content (overflow: hidden), so the dropdown sits right after the form. */
+.wsus__search {
+  position: relative;
+}
+
+.wsus__search_suggest {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(11, 44, 61, 0.15);
+  text-align: left;
+}
+
+.wsus__search_suggest[hidden] {
+  display: none;
+}
+
+.wsus__search_suggest ul {
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.wsus__search_suggest li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  color: #0b2c3d;
+  font-size: 14px;
+  text-transform: none;
+}
+
+.wsus__search_suggest li.is-active a {
+  background: #f5f6f7;
+  color: #08C;
+}
+
+.wsus__search_suggest img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.wsus__search_suggest_text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wsus__search_suggest_name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wsus__search_suggest_price {
+  color: #08C;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.wsus__search_suggest_price del {
+  margin-left: 4px;
+  color: #a0a0a0;
+  font-weight: 400;
+}
+
+.wsus__search_suggest mark {
+  padding: 0;
+  background: none;
+  color: #08C;
+  font-weight: 600;
+}
+
+.wsus__search_suggest small {
+  color: #a0a0a0;
+}
+
+.wsus__search_suggest_heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px 4px;
+  border-top: 1px solid #eee;
+  color: #a0a0a0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.wsus__search_suggest_heading:first-child {
+  border-top: none;
+}
+
+/* The template styles every ".wsus__search button" as the round search button (absolute, padded, tinted),
+   and the dropdown sits inside .wsus__search: the buttons below start from a plain reset. */
+.wsus__search_suggest button {
+  position: static;
+  top: auto;
+  right: auto;
+  transform: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  font-family: inherit;
+  line-height: 1;
+  transition: none;
+  cursor: pointer;
+}
+
+/* Recent searches: "Clear all" on the heading's right; every row has a remove (×) button on its right. */
+.wsus__search_suggest .wsus__search_suggest_clear {
+  color: #08C;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.wsus__search_suggest .wsus__search_suggest_clear:hover,
+.wsus__search_suggest .wsus__search_suggest_clear:focus-visible {
+  background: none !important;
+  color: #08C !important;
+  text-decoration: underline;
+}
+
+.wsus__search_suggest_recent {
+  position: relative;
+}
+
+.wsus__search_suggest li.wsus__search_suggest_recent a {
+  min-height: 40px;
+  padding-right: 48px; /* room for the × */
+}
+
+.wsus__search_suggest_recent a i {
+  width: 16px;
+  color: #a0a0a0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.wsus__search_suggest_term {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wsus__search_suggest .wsus__search_suggest_remove {
+  position: absolute;
+  top: 50%;
+  right: 8px; /* the 26px circle puts the × glyph's edge in line with the 16px padding */
+  width: 26px;
+  height: 26px;
+  margin-top: -13px;
+  border-radius: 50%;
+  color: #c4c4c4;
+  font-size: 13px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.wsus__search_suggest_recent:hover .wsus__search_suggest_remove,
+.wsus__search_suggest_recent.is-active .wsus__search_suggest_remove {
+  color: #6c757d;
+}
+
+.wsus__search_suggest .wsus__search_suggest_remove:hover,
+.wsus__search_suggest .wsus__search_suggest_remove:focus-visible {
+  background: #e9ecef !important;
+  color: #0b2c3d !important;
+}
+
+/* Touch screens have no hover: the remove button shows at full strength. */
+@media (hover: none) {
+  .wsus__search_suggest .wsus__search_suggest_remove {
+    color: #6c757d;
+  }
+}
+
+.wsus__search_suggest_empty {
+  padding: 10px 16px;
+  color: #0b2c3d;
+  font-size: 14px;
+}
+
+.wsus__search_suggest_all a {
+  margin-top: 4px;
+  border-top: 1px solid #eee;
+  color: #08C;
+  font-weight: 500;
+}
+
+/* Loading spinner inside the search box, left of the search button. */
+.wsus__search_spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 100px;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  border: 2px solid #aad8ff;
+  border-top-color: #08C;
+  border-radius: 50%;
+  animation: wsus-search-spin 0.7s linear infinite;
+}
+
+form.is-searching .wsus__search_spinner {
+  display: block;
+}
+
+@keyframes wsus-search-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile menu: the dropdown flows under the form, inside the menu panel. */
+/* The menu panel scrolls itself, so the list shows in full. */
+#wsus__mobile_menu .wsus__search_suggest {
+  position: static;
+  margin: -20px 10px 30px;
+  max-height: none;
+}
+
+#wsus__mobile_menu .wsus__search_suggest li a {
+  color: #0b2c3d;
+}
+
+#wsus__mobile_menu .wsus__search_suggest li.is-active a,
+#wsus__mobile_menu .wsus__search_suggest_all a {
+  color: #08C;
+}
+
+#wsus__mobile_menu .wsus__search_spinner {
+  right: 55px;
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+}

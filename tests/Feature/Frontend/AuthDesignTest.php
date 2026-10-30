@@ -60,6 +60,10 @@ class AuthDesignTest extends TestCase
     {
         $html = $this->get($url)->assertOk()->getContent();
 
+        // Only the auth form: the header and mobile menu search boxes have their own aria-label.
+        $html = substr($html, (int) strpos($html, 'id="wsus__login_register"'));
+        $html = substr($html, 0, (int) strpos($html, '<footer'));
+
         preg_match_all('#<input[^>]*name="(?!_token|remember|token)([^"]+)"[^>]*>#', $html, $inputs);
 
         foreach ($inputs[0] as $index => $tag) {

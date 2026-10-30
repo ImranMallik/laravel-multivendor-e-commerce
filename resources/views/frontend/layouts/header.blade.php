@@ -15,9 +15,11 @@
              </div>
              <div class="col-xl-5 col-md-6 col-lg-4 d-none d-lg-block">
                  <div class="wsus__search">
-                     <form>
-                         <input type="text" placeholder="Search...">
-                         <button type="submit"><i class="far fa-search"></i></button>
+                     <form action="{{ route('shop.index') }}" method="GET" role="search" data-search
+                         data-suggest-url="{{ route('frontend.search.suggestions') }}">
+                         <input type="text" name="search" placeholder="Search..." value="{{ $searchTerm }}"
+                             maxlength="100" autocomplete="off" aria-label="Search products">
+                         <button type="submit" aria-label="Search"><i class="far fa-search"></i></button>
                      </form>
                  </div>
              </div>

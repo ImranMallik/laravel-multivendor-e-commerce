@@ -158,6 +158,7 @@
     <script src="{{ asset('frontend-assets/js/compare.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/product-variants.js') }}"></script>
     <script src="{{ asset('frontend-assets/js/quick-view.js') }}"></script>
+    <script src="{{ asset('frontend-assets/js/search.js') }}"></script>
     @include('frontend.layouts.flash')
 </body>
 

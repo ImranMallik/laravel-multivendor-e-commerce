@@ -28,6 +28,9 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Live search suggestions under the header search box (the browser waits 300 ms between keystrokes).
+        RateLimiter::for('search', fn (Request $request) => Limit::perMinute(60)->by($request->ip()));
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

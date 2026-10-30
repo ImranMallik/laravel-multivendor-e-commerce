@@ -29,6 +29,7 @@ use App\View\Composers\BrandSliderComposer;
 use App\View\Composers\CategoryMenuComposer;
 use App\View\Composers\DashboardLayoutComposer;
 use App\View\Composers\ProductFormComposer;
+use App\View\Composers\SearchFormComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -76,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
 
         // The storefront menu gets its category tree here, never from a query inside Blade.
         View::composer('frontend.layouts.menu', CategoryMenuComposer::class);
+        View::composer(['frontend.layouts.header', 'frontend.layouts.menu'], SearchFormComposer::class);
         View::composer('frontend.home.section.brand-slider', BrandSliderComposer::class);
         View::composer('dashboard.layouts.app', DashboardLayoutComposer::class);
         View::composer('admin.layouts.partials.navbar', AdminNotificationsComposer::class);

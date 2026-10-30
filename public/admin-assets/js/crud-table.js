@@ -43,7 +43,10 @@
         return $.extend({name: column.data}, column);
     });
 
-    columns.push({data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'});
+    // Read-only lists (data-actions="false", e.g. reports) have no Actions column.
+    if ($table.data('actions') !== false) {
+        columns.push({data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-right text-nowrap'});
+    }
 
     var table = $table.DataTable({
         processing: true,
@@ -51,7 +54,7 @@
         searchDelay: 400,
         pageLength: 10,
         lengthMenu: [10, 25, 50, 100],
-        order: [[parseInt($table.data('order-column'), 10), 'asc']],
+        order: [[parseInt($table.data('order-column'), 10), $table.data('order-dir') === 'desc' ? 'desc' : 'asc']],
         language: {
             search: '',
             searchPlaceholder: 'Search',

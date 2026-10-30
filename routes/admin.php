@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductStateController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\SearchTermController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\VendorController;
@@ -77,6 +78,10 @@ Route::middleware(['auth:admin', 'auth.session'])->group(function () {
     Route::get('child-categories/data', [ChildCategoryController::class, 'data'])->name('child-categories.data');
     Route::patch('child-categories/{child_category}/status', [ChildCategoryController::class, 'status'])->name('child-categories.status');
     Route::resource('child-categories', ChildCategoryController::class)->except('show');
+
+    // Storefront search report (read-only).
+    Route::get('search-terms', [SearchTermController::class, 'index'])->name('search-terms.index');
+    Route::get('search-terms/data', [SearchTermController::class, 'data'])->name('search-terms.data');
 
     // Product catalog.
     Route::get('brands/data', [BrandController::class, 'data'])->name('brands.data');
